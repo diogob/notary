@@ -1,0 +1,3 @@
+{ db = "postgresql://trader@localhost/coinberry_development"
+, port = 8080
+}
