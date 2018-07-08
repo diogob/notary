@@ -1,6 +1,5 @@
 {-# LANGUAGE DataKinds       #-}
 {-# LANGUAGE TypeOperators   #-}
-{-# LANGUAGE TemplateHaskell #-}
 
 module CoinberryApi.Api
     ( server
@@ -10,33 +9,19 @@ module CoinberryApi.Api
     , serve
     ) where
 
+import CoinberryApi.Database (Pool)
 import CoinberryApi.Prelude
+import CoinberryApi.Domain
+import CoinberryApi.Handlers
 
-import Hasql.Pool (Pool)
+import Data.Vector
 
-import Data.Aeson
-import Data.Aeson.TH
-import Network.Wai
-import Network.Wai.Handler.Warp
 import Servant
 
-data User = User
-  { userId        :: Int
-  , userFirstName :: Text
-  , userLastName  :: Text
-  } deriving (Eq, Show)
-
-$(deriveJSON defaultOptions ''User)
-
-type API = "users" :> Get '[JSON] [User]
+type API = "currencies" :> Get '[JSON] (Vector Currency)
 
 api :: Proxy API
 api = Proxy
 
 server :: Pool -> Server API
-server _ = return users
-
-users :: [User]
-users = [ User 1 "Isaac" "Newton"
-        , User 2 "Albert" "Einstein"
-        ]
+server = listCurrencies

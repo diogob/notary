@@ -5,7 +5,6 @@ module Main where
 import CoinberryApi
 import           Protolude          hiding (readFile, Text)
 
-import           Hasql.Pool               (acquire)
 import           Network.Wai.Handler.Warp
 
 import           Dhall

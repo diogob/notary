@@ -4,7 +4,6 @@ module Main (main) where
 import Protolude hiding (get)
 
 import CoinberryApi
-import Hasql.Pool (acquire)
 import Test.Hspec
 import Test.Hspec.Wai
 import Test.Hspec.Wai.JSON
@@ -13,14 +12,14 @@ main :: IO ()
 main = hspec spec
 
 spec :: Spec
-spec = with (app <$> acquire (10, 10, "postgres://localhost/coinberry_api_test")) $
-    describe "GET /users" $ do
+spec = with (app <$> acquire (10, 10, "postgres://localhost/coinberry_test")) $
+    describe "GET /currencies" $ do
         it "responds with 200" $
-            get "/users" `shouldRespondWith` 200
-        it "responds with [User]" $ do
-            let users = [json|
-                [{"userId":1,"userFirstName":"Isaac","userLastName":"Newton"},{"userId":2,"userFirstName":"Albert","userLastName":"Einstein"}]
+            get "/currencies" `shouldRespondWith` 200
+        it "responds with [Currency]" $ do
+            let currencies = [json|
+                []
             |]
-            get "/users" `shouldRespondWith` users
+            get "/currencies" `shouldRespondWith` currencies
     where
             app = serve api . server
