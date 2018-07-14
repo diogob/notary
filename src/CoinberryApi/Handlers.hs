@@ -4,14 +4,13 @@ module CoinberryApi.Handlers
 
 import CoinberryApi.Prelude
 import CoinberryApi.Domain
-import CoinberryApi.Database (Pool, UsageError, currencies)
 import Data.Vector
 import Network.HTTP.Types
 import Data.Aeson (encode)
 import Servant
 
-listCurrencies :: Pool -> Handler (Vector Currency)
-listCurrencies pool = liftIO (currencies pool) >>= either err return
+listCurrencies :: Handler (Either ApiError (Vector Currency))  -> Handler (Vector Currency)
+listCurrencies c = c >>= either err return
   where
-    err :: UsageError -> Handler (Vector Currency)
-    err msg = throwError $ err503 { errBody = "Error" }
+    err :: ApiError -> Handler (Vector Currency)
+    err (Error msg) = throwError $ err503 { errBody = toS msg }

@@ -9,7 +9,7 @@ module CoinberryApi.Api
     , serve
     ) where
 
-import CoinberryApi.Database (Pool)
+import CoinberryApi.Database (Pool, currencies)
 import CoinberryApi.Prelude
 import CoinberryApi.Domain
 import CoinberryApi.Handlers
@@ -24,4 +24,4 @@ api :: Proxy API
 api = Proxy
 
 server :: Pool -> Server API
-server = listCurrencies
+server pool = listCurrencies (currencies pool)

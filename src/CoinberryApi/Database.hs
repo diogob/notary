@@ -17,11 +17,12 @@ import qualified Hasql.Encoders as HE
 import qualified Hasql.Decoders as HD
 import Hasql.Pool (Pool, UsageError, acquire, release, use)
 import Data.Either.Combinators (mapLeft)
-import Data.Vector 
+import Data.Vector hiding (sequence)
 
-currencies :: Pool -> IO (Either UsageError (Vector Currency)) 
-currencies = flip use currenciesQuery
+currencies :: MonadIO m => Pool -> m (Either ApiError (Vector Currency)) 
+currencies p = liftIO mapError
   where
+    mapError = mapLeft (\x -> Error "Database Error") <$> use p currenciesQuery
     currenciesQuery = query () currenciesStatement
     currenciesStatement =
         statement sql encoder decoder True
