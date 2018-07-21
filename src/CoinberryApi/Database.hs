@@ -19,10 +19,10 @@ import Hasql.Pool (Pool, UsageError, acquire, release, use)
 import Data.Either.Combinators (mapLeft)
 import Data.Vector hiding (sequence)
 
-currencies :: MonadIO m => Pool -> m (Either ApiError (Vector Currency)) 
+currencies :: MonadIO m => Pool -> m (Either ApiError Currencies) 
 currencies p = liftIO mapError
   where
-    mapError = mapLeft (\x -> Error "Database Error") <$> use p currenciesQuery
+    mapError = mapLeft (\_ -> Error "Database Error") <$> use p currenciesQuery
     currenciesQuery = query () currenciesStatement
     currenciesStatement =
         statement sql encoder decoder True

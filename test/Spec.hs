@@ -22,4 +22,4 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/coinberry_test")) $
             |]
             get "/currencies" `shouldRespondWith` currencies
     where
-            app = serve api . server
+            app = serve (Proxy :: Proxy API) . server

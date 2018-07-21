@@ -30,7 +30,6 @@ startApp :: Config -> IO ()
 startApp conf = do
   putStrLn $ ("Listening on port " :: Text) <> show portNumber
   pool <- acquire (10, 10, toS $ db conf)
-  run portNumber $ app pool
+  run portNumber $ serve (Proxy :: Proxy API) $ server pool
   where
     portNumber = fromIntegral $ port conf
-    app = serve api . server

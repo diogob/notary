@@ -9,8 +9,8 @@ import Network.HTTP.Types
 import Data.Aeson (encode)
 import Servant
 
-listCurrencies :: Handler (Either ApiError (Vector Currency))  -> Handler (Vector Currency)
+listCurrencies :: Handler (Either ApiError Currencies)  -> Handler Currencies
 listCurrencies c = c >>= either err return
   where
-    err :: ApiError -> Handler (Vector Currency)
+    err :: ApiError -> Handler Currencies
     err (Error msg) = throwError $ err503 { errBody = toS msg }
