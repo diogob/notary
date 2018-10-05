@@ -19,5 +19,5 @@ data Currency = Currency
 
 $(deriveJSON defaultOptions ''Currency)
 
-type Currencies = Vector Currency
+type Currencies = [Currency]
 

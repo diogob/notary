@@ -1,5 +1,7 @@
 {-# LANGUAGE DataKinds       #-}
 {-# LANGUAGE TypeOperators   #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module CoinberryApi.Api
     ( server
@@ -20,6 +22,7 @@ import Data.Vector
 import Data.Swagger
 import Servant.Swagger
 import Lens.Micro
+import Elm (ElmType)
 
 import Servant
 
@@ -27,9 +30,10 @@ type CoinberryApi = "currencies" :> Get '[JSON] Currencies
 
 type SwaggerAPI = "swagger.json" :> Get '[JSON] Swagger
 
-type API = SwaggerAPI :<|> CoinberryApi
+type API = CoinberryApi
 
 instance ToSchema Currency
+instance ElmType Currency
 
 api :: Proxy CoinberryApi
 api = Proxy
@@ -42,4 +46,4 @@ coinberrySwagger = toSwagger api
   & info.license ?~ ("MIT" & url ?~ URL "http://mit.com")
 
 server :: Pool -> Server API
-server pool = return coinberrySwagger :<|> listCurrencies (currencies pool)
+server pool = listCurrencies (currencies pool)

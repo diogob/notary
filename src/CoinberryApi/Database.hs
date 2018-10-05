@@ -30,4 +30,4 @@ currencies p = liftIO mapError
         "SELECT name, unit FROM public.currencies"
     encoder = HE.unit
     decoder =
-        HD.rowsVector $ Currency <$> HD.value HD.text <*> HD.value HD.text
+        HD.rowsList $ Currency <$> HD.value HD.text <*> HD.value HD.text
