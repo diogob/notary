@@ -11,8 +11,8 @@ module CoinberryApi.Database
 
 import CoinberryApi.Prelude
 import CoinberryApi.Domain
-import Hasql.Query (Query, statement)
-import Hasql.Session (Session, query)
+import Hasql.Statement (Statement (..))
+import Hasql.Session (Session, statement)
 import qualified Hasql.Encoders as HE
 import qualified Hasql.Decoders as HD
 import Hasql.Pool (Pool, UsageError, acquire, release, use)
@@ -23,11 +23,11 @@ currencies :: MonadIO m => Pool -> m (Either ApiError Currencies)
 currencies p = liftIO mapError
   where
     mapError = mapLeft (\_ -> Error "Database Error") <$> use p currenciesQuery
-    currenciesQuery = query () currenciesStatement
+    currenciesQuery = statement () currenciesStatement
     currenciesStatement =
-        statement sql encoder decoder True
+        Statement sql encoder decoder True
     sql =
         "SELECT name, unit FROM public.currencies"
     encoder = HE.unit
     decoder =
-        HD.rowsList $ Currency <$> HD.value HD.text <*> HD.value HD.text
+        HD.rowList $ Currency <$> HD.column HD.text <*> HD.column HD.text

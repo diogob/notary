@@ -30,8 +30,8 @@ library
                      , vector
                      , http-types
                      , protolude >= 0.1.6 && < 0.3
-                     , hasql >= 1.1.1 && < 1.2
-                     , hasql-pool >= 0.4.3 && < 0.5
+                     , hasql >= 1.1.1 && < 1.4
+                     , hasql-pool >= 0.4.3 && < 0.6
                      , servant-swagger
                      , swagger2
                      , microlens
