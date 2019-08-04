@@ -4,6 +4,8 @@
 module CoinberryApi.Domain 
     ( Currency(..)
     , Currencies(..)
+    , JwtBody(..)
+    , UIMessage(..)
     )
     where
 
@@ -21,3 +23,14 @@ $(deriveJSON defaultOptions ''Currency)
 
 type Currencies = [Currency]
 
+data JwtBody = JwtBody
+    { jwt :: Text
+    } deriving (Generic, Typeable)
+
+$(deriveJSON defaultOptions ''JwtBody)
+
+data UIMessage = UIMessage
+    { content :: Text
+    } deriving (Generic, Typeable)
+
+$(deriveJSON defaultOptions ''UIMessage)

@@ -26,16 +26,33 @@ import Elm (ElmType)
 
 import Servant
 
-type CoinberryApi = "currencies" :> Get '[JSON] Currencies
+{-
+POST signup
+POST confirm
+PATCH email
+PATCH signature
+-}
+
+type PublicApi = 
+                 "signup" :> ReqBody '[JSON] JwtBody :> Post '[JSON] UIMessage
+            :<|> "confirm" :> ReqBody '[JSON] JwtBody :> Post '[JSON] UIMessage
+            :<|> "email" :> ReqBody '[JSON] JwtBody :> Patch '[JSON] UIMessage
+            :<|> "signature" :> ReqBody '[JSON] JwtBody :> Patch '[JSON] UIMessage
+            :<|> "signature" :> ReqBody '[JSON] JwtBody :> Delete '[JSON] UIMessage
+
+type AdminApi = "verify" :> Get '[JSON] Currencies
 
 type SwaggerAPI = "swagger.json" :> Get '[JSON] Swagger
 
-type API = CoinberryApi
+type API = PublicApi
 
-instance ToSchema Currency
-instance ElmType Currency
+instance ToSchema JwtBody
+instance ElmType JwtBody
+instance ToSchema UIMessage
+instance ElmType UIMessage
 
-api :: Proxy CoinberryApi
+
+api :: Proxy PublicApi
 api = Proxy
 
 coinberrySwagger :: Swagger
@@ -46,4 +63,4 @@ coinberrySwagger = toSwagger api
   & info.license ?~ ("MIT" & url ?~ URL "http://mit.com")
 
 server :: Pool -> Server API
-server pool = listCurrencies (currencies pool)
+server pool = panic "need to implement api"
