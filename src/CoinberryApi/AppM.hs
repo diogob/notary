@@ -33,7 +33,6 @@ data AppCtx = AppCtx {
 
 data LogMessage = LogMessage {
   message        :: !Text
-  , timestamp    :: !UTCTime
   , level        :: !Text
   , lversion     :: !Text
   , lenvironment :: !Text
