@@ -15,17 +15,7 @@ import System.Log.FastLogger                      ( pushLogStrLn, toLogStr )
 
 signup :: JwtBody -> AppM NoContent
 signup jwt = do
-  logset <- asks getLogger
-  getTime <- asks getTime
-  time <- liftIO getTime
-
-  let logMsg = LogMessage { ltime = time
-  , lmessage = "let's do some logging!"
-  , level = "info"
-  , lversion = "1.1.1"
-  , lenvironment = "development"
-  }
-  liftIO $ pushLogStrLn logset $ toLogStr logMsg
+  pushLogEntry "let's do some logging!"
   pure NoContent
   where
     err :: ApiError -> Handler NoContent

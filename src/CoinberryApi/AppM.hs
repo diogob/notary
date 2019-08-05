@@ -33,7 +33,7 @@ data AppCtx = AppCtx {
 
 data LogMessage = LogMessage {
     ltime        :: !UTCTime     
-  , lmessage        :: !Text
+  , lmessage     :: !Text
   , level        :: !Text
   , lversion     :: !Text
   , lenvironment :: !Text
@@ -51,3 +51,17 @@ mkLogger = newStdoutLoggerSet defaultBufSize
 
 mkGetTime :: IO (IO UTCTime) 
 mkGetTime = mkAutoUpdate defaultUpdateSettings {updateAction = getCurrentTime}
+
+pushLogEntry :: Text -> AppM ()
+pushLogEntry msg = do
+  logset <- asks getLogger
+  getTime <- asks getTime
+  time <- liftIO getTime
+
+  let logMsg = LogMessage { ltime = time
+      , lmessage = msg
+      , level = "info"
+      , lversion = "1.1.1"
+      , lenvironment = "development"
+      }
+  liftIO $ pushLogStrLn logset $ toLogStr logMsg
