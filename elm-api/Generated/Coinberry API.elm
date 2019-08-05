@@ -7,7 +7,7 @@ import Http
 import String
 
 
-postSignup : JwtBody -> Http.Request (UIMessage)
+postSignup : JwtBody -> Http.Request (NoContent)
 postSignup body =
     Http.request
         { method =
@@ -22,14 +22,20 @@ postSignup body =
         , body =
             Http.jsonBody (encodeJwtBody body)
         , expect =
-            Http.expectJson decodeUIMessage
+            Http.expectStringResponse
+                (\{ body } ->
+                    if String.isEmpty body then
+                        Ok NoContent
+                    else
+                        Err "Expected the response body to be empty"
+                )
         , timeout =
             Nothing
         , withCredentials =
             False
         }
 
-postConfirm : JwtBody -> Http.Request (UIMessage)
+postConfirm : JwtBody -> Http.Request (NoContent)
 postConfirm body =
     Http.request
         { method =
@@ -44,14 +50,20 @@ postConfirm body =
         , body =
             Http.jsonBody (encodeJwtBody body)
         , expect =
-            Http.expectJson decodeUIMessage
+            Http.expectStringResponse
+                (\{ body } ->
+                    if String.isEmpty body then
+                        Ok NoContent
+                    else
+                        Err "Expected the response body to be empty"
+                )
         , timeout =
             Nothing
         , withCredentials =
             False
         }
 
-patchEmail : JwtBody -> Http.Request (UIMessage)
+patchEmail : JwtBody -> Http.Request (NoContent)
 patchEmail body =
     Http.request
         { method =
@@ -66,14 +78,20 @@ patchEmail body =
         , body =
             Http.jsonBody (encodeJwtBody body)
         , expect =
-            Http.expectJson decodeUIMessage
+            Http.expectStringResponse
+                (\{ body } ->
+                    if String.isEmpty body then
+                        Ok NoContent
+                    else
+                        Err "Expected the response body to be empty"
+                )
         , timeout =
             Nothing
         , withCredentials =
             False
         }
 
-patchSignature : JwtBody -> Http.Request (UIMessage)
+patchSignature : JwtBody -> Http.Request (NoContent)
 patchSignature body =
     Http.request
         { method =
@@ -88,14 +106,20 @@ patchSignature body =
         , body =
             Http.jsonBody (encodeJwtBody body)
         , expect =
-            Http.expectJson decodeUIMessage
+            Http.expectStringResponse
+                (\{ body } ->
+                    if String.isEmpty body then
+                        Ok NoContent
+                    else
+                        Err "Expected the response body to be empty"
+                )
         , timeout =
             Nothing
         , withCredentials =
             False
         }
 
-deleteSignature : JwtBody -> Http.Request (UIMessage)
+deleteSignature : JwtBody -> Http.Request (NoContent)
 deleteSignature body =
     Http.request
         { method =
@@ -110,7 +134,13 @@ deleteSignature body =
         , body =
             Http.jsonBody (encodeJwtBody body)
         , expect =
-            Http.expectJson decodeUIMessage
+            Http.expectStringResponse
+                (\{ body } ->
+                    if String.isEmpty body then
+                        Ok NoContent
+                    else
+                        Err "Expected the response body to be empty"
+                )
         , timeout =
             Nothing
         , withCredentials =
