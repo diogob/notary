@@ -17,7 +17,7 @@ signup :: JwtBody -> AppM NoContent
 signup jwt = do
   logset <- asks getLogger
   getTime <- asks getTime
-  time <- liftIO $ getTime
+  time <- liftIO getTime
 
   let logMsg = LogMessage { ltime = time
   , lmessage = "let's do some logging!"

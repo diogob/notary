@@ -33,7 +33,7 @@ startApp conf = do
   appLogger <- mkLogger
   getTime <- mkGetTime
   let ctx = AppCtx appLogger pool getTime
-  let runApp = run portNumber $ mkApp $ ctx
+  let runApp = run portNumber $ mkApp ctx
   runApp
   where
     portNumber = fromIntegral $ port conf

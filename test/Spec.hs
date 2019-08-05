@@ -16,3 +16,5 @@ spec = with (mkApp <$> (AppCtx <$> mkLogger <*> acquire (10, 10, "postgres://loc
     describe "POST /signup" $ do
         it "responds with 415 when body is empty" $
             post "/signup" "" `shouldRespondWith` 415
+        it "responds with 415 when jwt is empty" $
+            post "/signup" [json| { "jwt": "" } |] `shouldRespondWith` 415

@@ -1,5 +1,4 @@
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE TemplateHaskell #-}
 
 module CoinberryApi.AppM where
 
