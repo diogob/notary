@@ -29,10 +29,12 @@ type AppM = ReaderT AppCtx Handler
 data AppCtx = AppCtx {
     getLogger :: LoggerSet
   , getPool :: Pool
+  , getTime :: IO UTCTime
   }
 
 data LogMessage = LogMessage {
-  message        :: !Text
+    ltime        :: !UTCTime     
+  , lmessage        :: !Text
   , level        :: !Text
   , lversion     :: !Text
   , lenvironment :: !Text
@@ -47,3 +49,6 @@ instance ToLogStr LogMessage where
 
 mkLogger :: IO LoggerSet
 mkLogger = newStdoutLoggerSet defaultBufSize
+
+mkGetTime :: IO (IO UTCTime) 
+mkGetTime = mkAutoUpdate defaultUpdateSettings {updateAction = getCurrentTime}

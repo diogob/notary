@@ -4,6 +4,7 @@ module CoinberryApi
     , acquire
     , release
     , mkLogger 
+    , mkGetTime
     , AppCtx(..)
     ) where
 

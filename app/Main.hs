@@ -31,7 +31,8 @@ startApp conf = do
   putStrLn $ ("Listening on port " :: Text) <> show portNumber
   pool <- acquire (10, 10, toS $ db conf)
   appLogger <- mkLogger
-  let ctx = AppCtx appLogger pool
+  getTime <- mkGetTime
+  let ctx = AppCtx appLogger pool getTime
   let runApp = run portNumber $ mkApp $ ctx
   runApp
   where
