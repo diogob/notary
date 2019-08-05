@@ -1,11 +1,11 @@
 {-# LANGUAGE DataKinds       #-}
 {-# LANGUAGE TypeOperators   #-}
-{-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
 
 module CoinberryApi.Api
     ( server
     , api
+    , mkApp
 
     -- ** re-exports
     , serve
@@ -13,10 +13,11 @@ module CoinberryApi.Api
     , API
     ) where
 
-import CoinberryApi.Database (Pool, currencies)
+import CoinberryApi.Database (Pool)
 import CoinberryApi.Prelude
 import CoinberryApi.Domain
 import CoinberryApi.Handlers
+import CoinberryApi.AppM
 
 import Data.Vector
 import Data.Swagger
@@ -34,11 +35,11 @@ PATCH signature
 -}
 
 type PublicApi = 
-                 "signup" :> ReqBody '[JSON] JwtBody :> Post '[JSON] UIMessage
-            :<|> "confirm" :> ReqBody '[JSON] JwtBody :> Post '[JSON] UIMessage
-            :<|> "email" :> ReqBody '[JSON] JwtBody :> Patch '[JSON] UIMessage
-            :<|> "signature" :> ReqBody '[JSON] JwtBody :> Patch '[JSON] UIMessage
-            :<|> "signature" :> ReqBody '[JSON] JwtBody :> Delete '[JSON] UIMessage
+                 "signup" :> ReqBody '[JSON] JwtBody :> Post '[JSON] NoContent
+            :<|> "confirm" :> ReqBody '[JSON] JwtBody :> Post '[JSON] NoContent
+            :<|> "email" :> ReqBody '[JSON] JwtBody :> Patch '[JSON] NoContent
+            :<|> "signature" :> ReqBody '[JSON] JwtBody :> Patch '[JSON] NoContent
+            :<|> "signature" :> ReqBody '[JSON] JwtBody :> Delete '[JSON] NoContent
 
 type AdminApi = "verify" :> Get '[JSON] Currencies
 
@@ -51,7 +52,6 @@ instance ElmType JwtBody
 instance ToSchema UIMessage
 instance ElmType UIMessage
 
-
 api :: Proxy PublicApi
 api = Proxy
 
@@ -62,5 +62,11 @@ coinberrySwagger = toSwagger api
   & info.description ?~ "This is an API that tests swagger integration"
   & info.license ?~ ("MIT" & url ?~ URL "http://mit.com")
 
-server :: Pool -> Server API
-server pool = panic "need to implement api"
+server :: ServerT API AppM
+server = signup :<|> undefined
+
+nt :: AppCtx -> AppM a -> Handler a
+nt s x = runReaderT x s
+
+mkApp :: AppCtx -> Application
+mkApp s = serve api $ hoistServer api (nt s) server

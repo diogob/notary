@@ -21,6 +21,7 @@ library
                      , CoinberryApi.Domain
                      , CoinberryApi.Database
                      , CoinberryApi.Handlers
+                     , CoinberryApi.AppM
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , servant-server
@@ -36,6 +37,13 @@ library
                      , swagger2
                      , microlens
                      , elm-export
+                     , jose
+                     , auto-update
+                     , time
+                     , auto-update
+                     , monad-time
+                     , fast-logger
+
   default-language:    Haskell2010
   default-extensions:  OverloadedStrings, NoImplicitPrelude, LambdaCase
 

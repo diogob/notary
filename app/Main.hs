@@ -30,6 +30,10 @@ startApp :: Config -> IO ()
 startApp conf = do
   putStrLn $ ("Listening on port " :: Text) <> show portNumber
   pool <- acquire (10, 10, toS $ db conf)
-  run portNumber $ serve (Proxy :: Proxy API) $ server pool
+  appLogger <- mkLogger
+  let ctx = AppCtx appLogger pool
+  let runApp = run portNumber $ mkApp $ ctx
+  runApp
   where
     portNumber = fromIntegral $ port conf
+

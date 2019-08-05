@@ -1,5 +1,5 @@
 module CoinberryApi.Database 
-    ( currencies
+    ( signup
 
     -- re-exports
     , Pool
@@ -19,8 +19,8 @@ import Hasql.Pool (Pool, UsageError, acquire, release, use)
 import Data.Either.Combinators (mapLeft)
 import Data.Vector hiding (sequence)
 
-currencies :: MonadIO m => Pool -> m (Either ApiError Currencies) 
-currencies p = liftIO mapError
+signup :: MonadIO m => Pool -> JwtBody -> m (Either ApiError ()) 
+signup p jwt = undefined
   where
     mapError = mapLeft (\_ -> Error "Database Error") <$> use p currenciesQuery
     currenciesQuery = statement () currenciesStatement
