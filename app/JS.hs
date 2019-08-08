@@ -1,6 +1,6 @@
 module Main where
 
-import CoinberryApi
+import Notary
 import Protolude
 
 

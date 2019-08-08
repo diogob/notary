@@ -1,12 +1,12 @@
 module Main where
 
-import CoinberryApi
+import Notary
 import Protolude
 import Servant.Elm
 import Elm
 
 spec :: Spec
-spec = Spec ["Generated", "Coinberry API"]
+spec = Spec ["Notary"]
             (defElmImports
              : generateElmForAPI  (Proxy :: Proxy API))
 

@@ -1,4 +1,4 @@
-module CoinberryApi.Database 
+module Notary.Database 
     ( signup
 
     -- re-exports
@@ -9,8 +9,8 @@ module CoinberryApi.Database
     ) where
 
 
-import CoinberryApi.Prelude
-import CoinberryApi.Domain
+import Notary.Prelude
+import Notary.Domain
 import Hasql.Statement (Statement (..))
 import Hasql.Session (Session, statement)
 import qualified Hasql.Encoders as HE

@@ -1,8 +1,8 @@
-name:                CoinberryApi
+name:                Notary
 version:             0.1.0.0
 -- synopsis:
 -- description:
-homepage:            https://github.com/githubuser/CoinberryApi#readme
+homepage:            https://github.com/githubuser/Notary#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Author name here
@@ -15,13 +15,14 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     CoinberryApi
-  other-modules:       CoinberryApi.Prelude
-                     , CoinberryApi.Api
-                     , CoinberryApi.Domain
-                     , CoinberryApi.Database
-                     , CoinberryApi.Handlers
-                     , CoinberryApi.AppM
+  exposed-modules:     Notary
+  other-modules:       Notary.Prelude
+                     , Notary.Api
+                     , Notary.Domain
+                     , Notary.Database
+                     , Notary.Handlers
+                     , Notary.AppM
+                     , Notary.JWT
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , servant-server
@@ -52,7 +53,7 @@ executable js-api
   main-is:             JS.hs
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
-                     , CoinberryApi
+                     , Notary
                      , protolude >= 0.1.6 && < 0.3
                      , servant-js
   default-language:    Haskell2010
@@ -64,7 +65,7 @@ executable api
   main-is:             Main.hs
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
-                     , CoinberryApi
+                     , Notary
                      , protolude >= 0.1.6 && < 0.3
                      , warp
                      , envparse
@@ -76,7 +77,7 @@ test-suite api-elm
   hs-source-dirs:      test
   main-is:             Main.hs
   build-depends:       base
-                     , CoinberryApi
+                     , Notary
                      , hspec
                      , protolude >= 0.1.6 && < 0.3
                      , elm-export
@@ -90,7 +91,7 @@ test-suite api-test
   hs-source-dirs:      test
   main-is:             Spec.hs
   build-depends:       base
-                     , CoinberryApi
+                     , Notary
                      , hspec
                      , hspec-wai
                      , hspec-wai-json
@@ -102,4 +103,4 @@ test-suite api-test
 
 source-repository head
   type:     git
-  location: https://github.com/githubuser/CoinberryApi
+  location: https://github.com/githubuser/Notary

@@ -1,4 +1,4 @@
-module Generated.Coinberry API exposing (..)
+module Notary exposing (..)
 
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)

@@ -1,14 +1,14 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module CoinberryApi.Domain 
+module Notary.Domain 
     ( Signup
     , JwtBody(..)
     , UIMessage(..)
     )
     where
 
-import CoinberryApi.Prelude
+import Notary.Prelude
 import Data.Aeson.TH (deriveJSON, defaultOptions)
 import Data.Aeson (ToJSON)
 import Data.Vector

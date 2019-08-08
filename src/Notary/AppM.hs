@@ -1,9 +1,9 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module CoinberryApi.AppM where
+module Notary.AppM where
 
-import CoinberryApi.Prelude
-import CoinberryApi.Database
+import Notary.Prelude
+import Notary.Database
 
 import Data.Aeson.TH (deriveJSON, defaultOptions)
 import Data.Aeson (ToJSON (..), FromJSON, genericToEncoding, encode)

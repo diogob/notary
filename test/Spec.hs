@@ -3,7 +3,7 @@ module Main (main) where
 
 import Protolude hiding (get)
 
-import CoinberryApi
+import Notary
 import Test.Hspec
 import Test.Hspec.Wai
 import Test.Hspec.Wai.JSON

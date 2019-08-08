@@ -1,4 +1,4 @@
-module CoinberryApi.Prelude
+module Notary.Prelude
     ( module Exports
     , ApiError (..)
     ) where

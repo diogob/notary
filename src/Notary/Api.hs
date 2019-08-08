@@ -2,7 +2,7 @@
 {-# LANGUAGE TypeOperators   #-}
 {-# LANGUAGE FlexibleInstances #-}
 
-module CoinberryApi.Api
+module Notary.Api
     ( server
     , api
     , mkApp
@@ -13,11 +13,11 @@ module CoinberryApi.Api
     , API
     ) where
 
-import CoinberryApi.Database (Pool)
-import CoinberryApi.Prelude
-import CoinberryApi.Domain
-import CoinberryApi.Handlers
-import CoinberryApi.AppM
+import Notary.Database (Pool)
+import Notary.Prelude
+import Notary.Domain
+import Notary.Handlers
+import Notary.AppM
 
 import Data.Vector
 import Data.Swagger
