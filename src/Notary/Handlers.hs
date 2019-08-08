@@ -13,8 +13,8 @@ import Servant
 
 import System.Log.FastLogger                      ( pushLogStrLn, toLogStr )
 
-signup :: JwtBody -> AppM NoContent
-signup jwt = do
+signup :: SignupBody -> AppM NoContent
+signup body = do
   pushLogEntry "let's do some logging!"
   pure NoContent
   where

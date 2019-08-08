@@ -7,7 +7,7 @@ import Http
 import String
 
 
-postSignup : JwtBody -> Http.Request (NoContent)
+postSignup : SignupBody -> Http.Request (NoContent)
 postSignup body =
     Http.request
         { method =
@@ -20,7 +20,7 @@ postSignup body =
                 , "signup"
                 ]
         , body =
-            Http.jsonBody (encodeJwtBody body)
+            Http.jsonBody (encodeSignupBody body)
         , expect =
             Http.expectStringResponse
                 (\{ body } ->

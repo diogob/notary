@@ -28,7 +28,7 @@ import Elm (ElmType)
 import Servant
 
 type PublicApi = 
-                 "signup" :> ReqBody '[JSON] JwtBody :> Post '[JSON] NoContent
+                 "signup" :> ReqBody '[JSON] SignupBody :> Post '[JSON] NoContent
             :<|> "confirm" :> ReqBody '[JSON] JwtBody :> Post '[JSON] NoContent
             :<|> "signature" :> ReqBody '[JSON] JwtBody :> Patch '[JSON] NoContent
             :<|> "signature" :> ReqBody '[JSON] JwtBody :> Delete '[JSON] NoContent
@@ -41,6 +41,8 @@ type API = PublicApi
 
 instance ToSchema JwtBody
 instance ElmType JwtBody
+instance ToSchema SignupBody
+instance ElmType SignupBody
 instance ToSchema UIMessage
 instance ElmType UIMessage
 

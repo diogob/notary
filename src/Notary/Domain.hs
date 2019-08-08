@@ -4,6 +4,7 @@
 module Notary.Domain 
     ( Signup
     , JwtBody(..)
+    , SignupBody(..)
     , UIMessage(..)
     )
     where
@@ -14,20 +15,28 @@ import Data.Aeson (ToJSON)
 import Data.Vector
 
 data Signup = Signup
-    { jwk :: Text
-    , address :: Text
+    { sjwt :: Text
+    , saddress :: Text
+    , spublic_key :: Text
     } deriving (Generic, Typeable)
 
 $(deriveJSON defaultOptions ''Signup)
 
 data JwtBody = JwtBody
-    { jwt :: Text
+    { jbjwt :: Text
     } deriving (Generic, Typeable)
 
 $(deriveJSON defaultOptions ''JwtBody)
 
+data SignupBody = SignupBody
+    { sbjwt :: Text
+    , sbpublic_key :: Text
+    } deriving (Generic, Typeable)
+
+$(deriveJSON defaultOptions ''SignupBody)
+
 data UIMessage = UIMessage
-    { content :: Text
+    { ucontent :: Text
     } deriving (Generic, Typeable)
 
 $(deriveJSON defaultOptions ''UIMessage)
