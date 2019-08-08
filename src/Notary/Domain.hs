@@ -22,7 +22,7 @@ data Signup = Signup
 
 $(deriveJSON defaultOptions ''Signup)
 
-data JwtBody = JwtBody
+newtype JwtBody = JwtBody
     { jbjwt :: Text
     } deriving (Generic, Typeable)
 
@@ -35,7 +35,7 @@ data SignupBody = SignupBody
 
 $(deriveJSON defaultOptions ''SignupBody)
 
-data UIMessage = UIMessage
+newtype UIMessage = UIMessage
     { ucontent :: Text
     } deriving (Generic, Typeable)
 
