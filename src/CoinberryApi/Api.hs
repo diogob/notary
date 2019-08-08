@@ -27,17 +27,9 @@ import Elm (ElmType)
 
 import Servant
 
-{-
-POST signup
-POST confirm
-PATCH email
-PATCH signature
--}
-
 type PublicApi = 
                  "signup" :> ReqBody '[JSON] JwtBody :> Post '[JSON] NoContent
             :<|> "confirm" :> ReqBody '[JSON] JwtBody :> Post '[JSON] NoContent
-            :<|> "email" :> ReqBody '[JSON] JwtBody :> Patch '[JSON] NoContent
             :<|> "signature" :> ReqBody '[JSON] JwtBody :> Patch '[JSON] NoContent
             :<|> "signature" :> ReqBody '[JSON] JwtBody :> Delete '[JSON] NoContent
 

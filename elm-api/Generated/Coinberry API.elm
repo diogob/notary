@@ -63,34 +63,6 @@ postConfirm body =
             False
         }
 
-patchEmail : JwtBody -> Http.Request (NoContent)
-patchEmail body =
-    Http.request
-        { method =
-            "PATCH"
-        , headers =
-            []
-        , url =
-            String.join "/"
-                [ ""
-                , "email"
-                ]
-        , body =
-            Http.jsonBody (encodeJwtBody body)
-        , expect =
-            Http.expectStringResponse
-                (\{ body } ->
-                    if String.isEmpty body then
-                        Ok NoContent
-                    else
-                        Err "Expected the response body to be empty"
-                )
-        , timeout =
-            Nothing
-        , withCredentials =
-            False
-        }
-
 patchSignature : JwtBody -> Http.Request (NoContent)
 patchSignature body =
     Http.request
