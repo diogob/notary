@@ -19,15 +19,8 @@ import Hasql.Pool (Pool, UsageError, acquire, release, use)
 import Data.Either.Combinators (mapLeft)
 import Data.Vector hiding (sequence)
 
-signup :: MonadIO m => Pool -> JwtBody -> m (Either ApiError ()) 
-signup p jwt = undefined
+signup :: MonadIO m => Pool -> Signup -> m (Either ApiError ()) 
+signup p s = undefined
   where
-    mapError = mapLeft (\_ -> Error "Database Error") <$> use p currenciesQuery
-    currenciesQuery = statement () currenciesStatement
-    currenciesStatement =
-        Statement sql encoder decoder True
-    sql =
-        "SELECT name, unit FROM public.currencies"
-    encoder = HE.unit
-    decoder =
-        HD.rowList $ Currency <$> HD.column HD.text <*> HD.column HD.text
+    mapError = mapLeft (\_ -> Error "Database Error") <$> use p stmt
+    stmt = undefined

@@ -33,7 +33,7 @@ type PublicApi =
             :<|> "signature" :> ReqBody '[JSON] JwtBody :> Patch '[JSON] NoContent
             :<|> "signature" :> ReqBody '[JSON] JwtBody :> Delete '[JSON] NoContent
 
-type AdminApi = "verify" :> Get '[JSON] Currencies
+type AdminApi = "verify" :> Get '[JSON] NoContent
 
 type SwaggerAPI = "swagger.json" :> Get '[JSON] Swagger
 

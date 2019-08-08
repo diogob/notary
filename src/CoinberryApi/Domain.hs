@@ -2,8 +2,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module CoinberryApi.Domain 
-    ( Currency(..)
-    , Currencies(..)
+    ( Signup
     , JwtBody(..)
     , UIMessage(..)
     )
@@ -14,14 +13,12 @@ import Data.Aeson.TH (deriveJSON, defaultOptions)
 import Data.Aeson (ToJSON)
 import Data.Vector
 
-data Currency = Currency
-    { name :: Text
-    , unit :: Text
+data Signup = Signup
+    { jwk :: Text
+    , address :: Text
     } deriving (Generic, Typeable)
 
-$(deriveJSON defaultOptions ''Currency)
-
-type Currencies = [Currency]
+$(deriveJSON defaultOptions ''Signup)
 
 data JwtBody = JwtBody
     { jwt :: Text
