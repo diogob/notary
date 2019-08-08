@@ -66,8 +66,8 @@ executable api
   build-depends:       base
                      , CoinberryApi
                      , protolude >= 0.1.6 && < 0.3
-                     , dhall
                      , warp
+                     , envparse
   default-language:    Haskell2010
   default-extensions:  OverloadedStrings, NoImplicitPrelude, LambdaCase
 

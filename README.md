@@ -6,19 +6,18 @@
 * Confirm users' email address.
 * Verify arbitrary tokens and decode their claims.
 * Allow users to change their password.
-* Allow users to change their email (always confirming).
 * Block users that misbehave calling the endpoints too many times or too often.
 * Ensure all used tokens have strong algorithms and expire within parameters.
 * Allow users to disable their account.
 * Allow admins to disable arbitrary accounts.
-* Make it more expensive to generate valid requests.
+* Make it expensive to generate valid public requests.
 
 ## Sign-up and Authentiction flow
 
 1. User send JWT containing email + jwk.
-1. Email is persisted alongside the jwk. Confirmation token is created and made available for email system for confirmation.
-1. Email is confirmed through confirmation endpoint using the same user creation JWT to confirm the user still has access to the secret.
-1. After confirmation the user JWT becomes active. Now the email becomes unique as well as the public key. The verification endpoint will return a 200 while the account is active.
+2. Email is persisted alongside the jwk. Confirmation token is created and made available for email system for confirmation.
+3. Email is confirmed through confirmation endpoint using the same user creation JWT to confirm the user still has access to the secret.
+4. After confirmation the user JWT becomes active. Now the email becomes unique as well as the public key. The verification endpoint will return a 200 while the account is active.
 
 ## High level overview of endpoints
 
@@ -26,7 +25,6 @@
 ```
 POST signup
 POST confirm
-PATCH email
 PATCH signature
 DELETE signature (mark confirmation as disabled)
 ```
@@ -52,7 +50,7 @@ DELETE signature (mark confirmation as disabled)
 	* Attributes: id (uuid), created_at, client info (ip, user agent, etc).
 	* What would usually be called a user, but signup here is more accurate, since all signups are stored, even the ones that are never confirmed. The idea is that signups are events and users emerge from signups+confirmations.
 * confirmations
-	* Attributes: `signup_id`, `created_at`, `email` (unique when confirmed), `public_key`, `confirmation_token_hash`, `confirmed_at`, `disabled_at`.
+	* Attributes: `signup_id`, `created_at`, `address` (unique when confirmed), `public_key`, `confirmation_token_hash`, `confirmed_at`, `disabled_at`.
 
 ## Configuration
 

@@ -1,28 +1,22 @@
-{-# LANGUAGE DeriveGeneric #-}
-
 module Main where
 
 import CoinberryApi
-import           Protolude          hiding (readFile, Text)
+import           Protolude
 
 import           Network.Wai.Handler.Warp
 
-import           Dhall
-import           System.Environment (getArgs)
+import Env
 
 data Config = Config { db :: Text 
                      , port :: Integer
-                     } deriving (Generic, Show)
-
-instance Interpret Config
+                     } deriving (Show)
 
 loadConfig :: IO Config
-loadConfig = do
-    args <- getArgs
-    case args of
-        path:_ -> input auto (toS path)
-        _      -> die "no config file argument"
-
+loadConfig =
+  Env.parse (header "Notary") $
+    Config <$> var (str <=< nonempty) "NOTARY_DB_URI"  (help "Database to to store signatures")
+          <*> var (auto <=< nonempty) "NOTARY_PUBLIC_PORT" (help "Public port for the http server")
+   
 main :: IO ()
 main = loadConfig >>= startApp
 
