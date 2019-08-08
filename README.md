@@ -1,16 +1,15 @@
-# Notary
+# Notary 
+
+[![CircleCI](https://circleci.com/gh/Coinberry/notary.svg?style=svg&circle-token=e4d47b8b402667233594988ac1565ddd5ca5ac8f)](https://circleci.com/gh/Coinberry/notary)
 
 ## Goals
 
-* Allow new users to sign up.
-* Confirm users' email address.
-* Verify arbitrary tokens and decode their claims.
+* Allow new users to sign up without sending any secret.
+* Confirm users' identity out of band.
+* Allow users to sign arbitrary requests and validate them without having a shared secret.
 * Allow users to change their password.
-* Block users that misbehave calling the endpoints too many times or too often.
-* Ensure all used tokens have strong algorithms and expire within parameters.
 * Allow users to disable their account.
 * Allow admins to disable arbitrary accounts.
-* Make it expensive to generate valid public requests.
 
 ## Sign-up and Authentiction flow
 
