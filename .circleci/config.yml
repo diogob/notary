@@ -1,0 +1,42 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: fpco/stack-build:lts-13.29
+      - image: postgres:9.5
+        environment:
+          POSTGRES_USER: coinberry
+          POSTGRES_DB: coinberry_test
+          POSTGRES_PASSWORD: ""
+
+    working_directory: /home/stackage
+
+    environment:
+      TEST_RESULTS: /tmp/test-results
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: stack-trader-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
+      - run: .circleci/setupenv.sh
+      - run: .circleci/build.sh
+      - save_cache:
+          key: stack-trader-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
+          paths:
+            - ~/.stack
+            - .stack-work
+            - ~/.local
+      - run: .circleci/test.sh
+      - run: .circleci/lint.sh
+      - persist_to_workspace:
+          root: ~/.local/bin/
+          paths: notary
+      - store_artifacts:
+          path: ~/.local/bin/notary
+          destination: notary
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
