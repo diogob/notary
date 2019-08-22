@@ -6,6 +6,7 @@ module Notary
     , mkLogger 
     , mkGetTime
     , AppCtx(..)
+    , Config(..)
     ) where
 
 import Notary.Prelude

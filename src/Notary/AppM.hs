@@ -25,11 +25,16 @@ import Servant
 
 type AppM = ReaderT AppCtx Handler
 
-data AppCtx = AppCtx {
-    getLogger :: LoggerSet
-  , getPool :: Pool
-  , getTime :: IO UTCTime
-  }
+data AppCtx = AppCtx { config :: Config
+                     , getLogger :: LoggerSet
+                     , getPool :: Pool
+                     , getTime :: IO UTCTime
+                     }
+
+data Config = Config { db :: Text 
+                     , port :: Integer
+                     } deriving (Show)
+
 
 data LogMessage = LogMessage {
     ltime        :: !UTCTime     
