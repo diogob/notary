@@ -10,9 +10,9 @@ module Notary.Domain
     where
 
 import Notary.Prelude
-import Data.Aeson.TH (deriveJSON, defaultOptions)
+import Data.Aeson.TH (deriveJSON, defaultOptions, fieldLabelModifier)
 import Data.Aeson (ToJSON)
-import Data.Vector
+import Data.Vector hiding (drop)
 
 data Signup = Signup
     { sjwt :: Text
@@ -33,7 +33,7 @@ data SignupBody = SignupBody
     , sbpublic_key :: Text
     } deriving (Generic, Typeable)
 
-$(deriveJSON defaultOptions ''SignupBody)
+$(deriveJSON defaultOptions{ fieldLabelModifier = drop 2 } ''SignupBody)
 
 newtype UIMessage = UIMessage
     { ucontent :: Text
