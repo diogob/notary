@@ -17,7 +17,7 @@ import Data.Vector hiding (drop)
 data Signup = Signup
     { sjwt :: Text
     , saddress :: Text
-    , spublic_key :: Text
+    , spublicKey :: Text
     } deriving (Generic, Typeable)
 
 $(deriveJSON defaultOptions ''Signup)
@@ -30,7 +30,7 @@ $(deriveJSON defaultOptions ''JwtBody)
 
 data SignupBody = SignupBody
     { sbjwt :: Text
-    , sbpublic_key :: Text
+    , sbpublicKey :: Text
     } deriving (Generic, Typeable)
 
 $(deriveJSON defaultOptions{ fieldLabelModifier = drop 2 } ''SignupBody)

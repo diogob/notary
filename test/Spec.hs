@@ -24,7 +24,7 @@ spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db c
         it "responds with 400 when jwt is empty" $
             signupJSON [json| { "jwt": "", "public_key": "" } |] `shouldRespondWith` 400
         it "responds with 400 when jwt is invalid" $
-            signupJSON [json| { "jwt": "test", "public_key": "" } |] `shouldRespondWith` 400
+            signupJSON [json| { "jwt": "test", "publicKey": "" } |] `shouldRespondWith` 400
     where
         signupJSON = request methodPost "/signup" [("Content-Type", "application/json")]
         conf = Config { db = "postgres://localhost/coinberry_test", port = 8080 }
