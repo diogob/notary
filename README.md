@@ -14,9 +14,10 @@
 ## Sign-up and Authentiction flow (using email as proof of id)
 
 1. User send JWT containing email + kid and a public key.
-2. Email is persisted alongside the public key (which should match the kid). Confirmation token is created and made available for external email system for confirmation.
-3. Email is confirmed through confirmation endpoint using the same user creation JWT to confirm the user still has access to the secret (password need to by typed when confirming email).
-4. After confirmation the user JWT becomes active. Now the email becomes unique as well as the public key. The verification endpoint will return a 200 while the account is active.
+1. Email is persisted alongside the public key (which should match the kid). Confirmation token is created and made available for external email system for confirmation.
+1. User signs the confirmation token and sends this new JWT
+1. Email is confirmed through confirmation endpoint using confirmation JWT to ensure the user still has access to the secret (password need to be typed when confirming email).
+1. After confirmation the user JWT becomes active. Now the email becomes unique as well as the public key. The verification endpoint will return a 200 while the account is active.
 
 ## High level overview of endpoints
 
@@ -61,3 +62,4 @@ DELETE signature (mark confirmation as disabled)
 * `max_calls_per_second` - calls/second/ip allowed before throtle.
 * `max_calls_per_minute` - calls/minute/ip allowed before blocking ip for `block_ips_for`.
 * `block_ips_for` - hours to block ips that exceed `max_calls_per_minute`.
+* `public_uri` - address visible to the user during signup (stored as `aud` claim and be checked against referrer header)
