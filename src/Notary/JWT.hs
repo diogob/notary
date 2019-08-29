@@ -1,4 +1,4 @@
-module Notary.JWT (verifyJWT) where
+module Notary.JWT where
 
 import Notary.Prelude
 

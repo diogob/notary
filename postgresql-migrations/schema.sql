@@ -4,7 +4,8 @@ CREATE SCHEMA notary;
 
 CREATE TABLE notary.signups (
 	id uuid PRIMARY KEY,
-    created_at timestamp NOT NULL UNIQUE DEFAULT now()
+    created_at timestamp NOT NULL UNIQUE DEFAULT now(),
+    salt text NOT NULL UNIQUE
 );
 
 GRANT INSERT ON notary.signups TO notary_public;

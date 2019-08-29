@@ -28,7 +28,8 @@ import Elm (ElmType)
 import Servant
 
 type PublicApi = 
-                 "signup" :> ReqBody '[JSON] SignupBody :> Post '[JSON] NoContent
+                 "salt" :> ReqBody '[JSON] SaltRequest :> Post '[JSON] Salt
+            :<|> "signup" :> ReqBody '[JSON] SignupRequest :> Post '[JSON] NoContent
             :<|> "confirm" :> ReqBody '[JSON] JwtBody :> Post '[JSON] NoContent
             :<|> "signature" :> ReqBody '[JSON] JwtBody :> Patch '[JSON] NoContent
             :<|> "signature" :> ReqBody '[JSON] JwtBody :> Delete '[JSON] NoContent
@@ -41,10 +42,14 @@ type API = PublicApi
 
 instance ToSchema JwtBody
 instance ElmType JwtBody
-instance ToSchema SignupBody
-instance ElmType SignupBody
+instance ToSchema SignupRequest
+instance ElmType SignupRequest
 instance ToSchema UIMessage
 instance ElmType UIMessage
+instance ToSchema Salt
+instance ElmType Salt
+instance ToSchema SaltRequest
+instance ElmType SaltRequest
 
 api :: Proxy PublicApi
 api = Proxy
@@ -57,7 +62,7 @@ coinberrySwagger = toSwagger api
   & info.license ?~ ("MIT" & url ?~ URL "http://mit.com")
 
 server :: ServerT API AppM
-server = signup :<|> undefined
+server = salt :<|> signup :<|> undefined
 
 nt :: AppCtx -> AppM a -> Handler a
 nt s x = runReaderT x s

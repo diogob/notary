@@ -4,8 +4,10 @@
 module Notary.Domain 
     ( Signup
     , JwtBody(..)
-    , SignupBody(..)
+    , SignupRequest(..)
     , UIMessage(..)
+    , Salt(..)
+    , SaltRequest(..)
     )
     where
 
@@ -28,12 +30,25 @@ newtype JwtBody = JwtBody
 
 $(deriveJSON defaultOptions ''JwtBody)
 
-data SignupBody = SignupBody
+data SignupRequest = SignupRequest
     { sbjwt :: Text
     , sbpublicKey :: Text
     } deriving (Generic, Typeable)
 
-$(deriveJSON defaultOptions{ fieldLabelModifier = drop 2 } ''SignupBody)
+$(deriveJSON defaultOptions{ fieldLabelModifier = drop 2 } ''SignupRequest)
+
+data SaltRequest = SaltRequest
+    { sraddress :: Text
+    } deriving (Generic, Typeable)
+
+$(deriveJSON defaultOptions{ fieldLabelModifier = drop 2 } ''SaltRequest)
+
+newtype Salt = Salt
+    { unsalt :: Text
+    } deriving (Generic, Typeable)
+
+$(deriveJSON defaultOptions{ fieldLabelModifier = drop 2 } ''Salt)
+
 
 newtype UIMessage = UIMessage
     { ucontent :: Text

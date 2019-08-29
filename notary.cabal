@@ -44,6 +44,9 @@ library
                      , auto-update
                      , monad-time
                      , fast-logger
+                     , cryptonite
+                     , base64-bytestring
+                     , lens
 
   default-language:    Haskell2010
   default-extensions:  OverloadedStrings, NoImplicitPrelude, LambdaCase

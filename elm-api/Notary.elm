@@ -7,7 +7,29 @@ import Http
 import String
 
 
-postSignup : SignupBody -> Http.Request (NoContent)
+postSalt : SaltRequest -> Http.Request (Salt)
+postSalt body =
+    Http.request
+        { method =
+            "POST"
+        , headers =
+            []
+        , url =
+            String.join "/"
+                [ ""
+                , "salt"
+                ]
+        , body =
+            Http.jsonBody (encodeSaltRequest body)
+        , expect =
+            Http.expectJson decodeSalt
+        , timeout =
+            Nothing
+        , withCredentials =
+            False
+        }
+
+postSignup : SignupRequest -> Http.Request (NoContent)
 postSignup body =
     Http.request
         { method =
@@ -20,7 +42,7 @@ postSignup body =
                 , "signup"
                 ]
         , body =
-            Http.jsonBody (encodeSignupBody body)
+            Http.jsonBody (encodeSignupRequest body)
         , expect =
             Http.expectStringResponse
                 (\{ body } ->

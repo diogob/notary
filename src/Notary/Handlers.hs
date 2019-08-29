@@ -1,5 +1,8 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Notary.Handlers 
-    ( signup
+    ( salt
+    , signup
     ) where
 
 import Notary.Prelude
@@ -12,9 +15,17 @@ import Network.HTTP.Types
 import Data.Aeson (encode)
 import Servant
 
+import qualified Data.ByteString.Base64 as B64
+import Crypto.Random.Types
+
 import System.Log.FastLogger                      ( pushLogStrLn, toLogStr )
 
-signup :: SignupBody -> AppM NoContent
+salt :: SaltRequest -> AppM Salt
+salt body = do
+  (salt :: ByteString) <- liftIO $ getRandomBytes 12
+  pure $ Salt $ toS $ B64.encode salt
+
+signup :: SignupRequest -> AppM NoContent
 signup body = do
   getTime <- asks getTime
   let t = getTime
