@@ -5,6 +5,8 @@ CREATE ROLE notary;
 CREATE SCHEMA notary AUTHORIZATION notary;
 SET ROLE notary;
 
+GRANT USAGE ON SCHEMA notary TO notary_public;
+
 CREATE TABLE notary.signups (
     created_at timestamp NOT NULL UNIQUE DEFAULT now(),
 	address text PRIMARY KEY,
@@ -15,6 +17,7 @@ CREATE OR REPLACE FUNCTION notary.signup(paddress text)
 RETURNS bytea
 LANGUAGE sql
 VOLATILE
+SECURITY DEFINER
 AS $$
 WITH 
 first AS (

@@ -22,8 +22,14 @@ import System.Log.FastLogger                      ( pushLogStrLn, toLogStr )
 
 salt :: SaltRequest -> AppM Salt
 salt body = do
-  (salt :: ByteString) <- liftIO $ getRandomBytes 12
-  pure $ Salt $ toS $ B64.encode salt
+  pool <- asks getPool
+  saltOrError <- DB.salt pool $ sraddress body
+  case saltOrError of 
+    Right salt -> pure $ Salt $ toS $ B64.encode salt
+    Left e -> err e
+  where
+    err :: ApiError -> AppM Salt
+    err (Error msg) = throwError $ err503 { errBody = toS msg }
 
 signup :: SignupRequest -> AppM NoContent
 signup body = do
