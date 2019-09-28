@@ -8,5 +8,3 @@ DBUSER=${DBUSER=notary}
 DBURI="postgres://${DBUSER}@${DBHOST}/${DBNAME}"
 
 psql ${DBURI} < postgresql-migrations/schema.sql
-
-stack install --resolver=lts-14.7 hlint
