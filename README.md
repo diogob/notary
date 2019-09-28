@@ -42,26 +42,19 @@ DELETE signature (mark confirmation as disabled)
 
 ### Caveats
 
-* Resend confirmations is a new signup.
+* Resend confirmations is a new entry in signups relation.
 * Changes in password/email require access to the old email and generate a new confirmation.
 * There is only one admin secret and is used by another application.
 
-## Data structures
-
-* signups
-	* Attributes: `id` (uuid), `created_at`, client info (`ip`, `user_agent`, etc).
-	* What would usually be called a user, but signup here is more accurate, since all signups are stored, even the ones that are never confirmed. The idea is that signups are events and users emerge from signups+confirmations.
-* confirmations
-	* Attributes: `signup_id`, `kid` (unique), `created_at`, `address` (unique when confirmed), `jwt`, `public_key`, `confirmation_token_hash`, `confirmed_at`, `disabled_at`.
-
 ## Configuration
 
+* `NOTARY_DB_URI` - Database to connect to.
+* `NOTARY_PUBLIC_URI` - address visible to the user during signup (stored as `aud` claim and be checked against referrer header)
+* `NOTARY_PUBLIC_PORT` - where to listen for calls from users.
+
 * `confirmation_ttl` - time confirmations can wait for the `confirm` call.
-* `secret` - used as seed to create random confirmation tokens.
 * `confirmation_uri` - URI to call with confirmation token (generated and never stored).
-* `public_interface` - where to listen for calls from users.
 * `admin_interface` - where to listen for calls from admins.
 * `max_calls_per_second` - calls/second/ip allowed before throtle.
 * `max_calls_per_minute` - calls/minute/ip allowed before blocking ip for `block_ips_for`.
 * `block_ips_for` - hours to block ips that exceed `max_calls_per_minute`.
-* `public_uri` - address visible to the user during signup (stored as `aud` claim and be checked against referrer header)
