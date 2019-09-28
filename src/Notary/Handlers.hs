@@ -40,12 +40,12 @@ signup body = do
   let jwt = sbjwt body
       jwk = sbpublicKey body
       audience = publicUri cfg
-  claimsOrError <- verifyJWT (toS audience) t jwk undefined
+  claimsOrError <- verifyJWT (toS audience) t jwk (toS jwt)
   case claimsOrError of
     Right c -> do
-      pushLogEntry $ "let's do some logging! jwt: " <> jwt
+      -- pushLogEntry $ "let's do some logging! jwt: " <> jwt
       pure NoContent
-    Left _ -> err $ Error "Invalid JWT"
+    Left e -> err $ Error $ "Invalid JWT: " <> show e
   where
     err :: ApiError -> AppM NoContent
-    err (Error msg) = throwError $ err503 { errBody = toS msg }
+    err (Error msg) = throwError $ err400 { errBody = toS msg }
