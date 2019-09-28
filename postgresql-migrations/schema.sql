@@ -1,6 +1,5 @@
 CREATE EXTENSION pgcrypto;
 CREATE ROLE notary_public;
-CREATE ROLE notary;
 
 CREATE SCHEMA notary AUTHORIZATION notary;
 SET ROLE notary;
