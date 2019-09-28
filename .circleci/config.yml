@@ -17,18 +17,18 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: stack-notary-v2-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
+          key: stack-notary-v3-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
       - run: .circleci/setupenv.sh
-      - run: stack build --only-dependencies
+      - run: stack build --test --only-dependencies
       - save_cache:
-          key: stack-notary-v2-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
+          key: stack-notary-v3-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
           paths:
             - ~/.stack
             - .stack-work
             - ~/.local
       - run: .circleci/build.sh
       - save_cache:
-          key: stack-notary-v2-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
+          key: stack-notary-v3-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
           paths:
             - ~/.stack
             - .stack-work
