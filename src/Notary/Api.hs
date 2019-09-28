@@ -24,6 +24,7 @@ import Data.Swagger
 import Servant.Swagger
 import Lens.Micro
 import Elm (ElmType)
+import Crypto.JWT (JWK)
 
 import Servant
 
@@ -39,7 +40,11 @@ type AdminApi = "verify" :> Get '[JSON] NoContent
 type SwaggerAPI = "swagger.json" :> Get '[JSON] Swagger
 
 type API = PublicApi
-
+instance ToSchema JWK where
+  declareNamedSchema _ = do
+    doubleSchema <- declareSchemaRef (Proxy :: Proxy Double)
+    return $ NamedSchema (Just "JWK") $ mempty
+      & required .~ [ "key" ]
 instance ToSchema JwtBody
 instance ToSchema SignupRequest
 instance ToSchema UIMessage

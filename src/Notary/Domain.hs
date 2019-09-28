@@ -15,6 +15,7 @@ import Notary.Prelude
 import Data.Aeson.TH (deriveJSON, defaultOptions, fieldLabelModifier)
 import Data.Aeson (ToJSON)
 import Data.Vector hiding (drop)
+import Crypto.JWT (JWK)
 
 data Signup = Signup
     { sjwt :: Text
@@ -32,7 +33,7 @@ $(deriveJSON defaultOptions ''JwtBody)
 
 data SignupRequest = SignupRequest
     { sbjwt :: Text
-    , sbpublicKey :: Text
+    , sbpublicKey :: JWK
     } deriving (Generic, Typeable)
 
 $(deriveJSON defaultOptions{ fieldLabelModifier = drop 2 } ''SignupRequest)

@@ -36,7 +36,7 @@ GRANT EXECUTE
 CREATE TABLE notary.confirmations (
     created_at timestamp NOT NULL UNIQUE DEFAULT now(),
     address text NOT NULL REFERENCES notary.signups(address),
-    public_key text NOT NULL,
+    public_key jsonb NOT NULL,
     confirmation_token_hash text NOT NULL,
     confirmed_at timestamp,
     disabled_at timestamp
