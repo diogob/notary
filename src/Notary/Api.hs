@@ -41,15 +41,10 @@ type SwaggerAPI = "swagger.json" :> Get '[JSON] Swagger
 type API = PublicApi
 
 instance ToSchema JwtBody
-instance ElmType JwtBody
 instance ToSchema SignupRequest
-instance ElmType SignupRequest
 instance ToSchema UIMessage
-instance ElmType UIMessage
 instance ToSchema Salt
-instance ElmType Salt
 instance ToSchema SaltRequest
-instance ElmType SaltRequest
 
 api :: Proxy PublicApi
 api = Proxy
