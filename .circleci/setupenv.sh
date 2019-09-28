@@ -7,4 +7,4 @@ DBHOST=${DBHOST=localhost}
 DBUSER=${DBUSER=notary}
 DBURI="postgres://${DBUSER}@${DBHOST}/${DBNAME}"
 
-psql ${DBURI} -c '\set ON_ERROR_STOP' -a < postgresql-migrations/schema.sql
+psql ${DBURI} < postgresql-migrations/schema.sql
