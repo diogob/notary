@@ -22,7 +22,7 @@ import Data.Vector hiding (sequence)
 salt :: MonadIO m => Pool -> Text -> m (Either ApiError ByteString)
 salt pool address = liftIO mapError
   where
-    mapError = mapLeft (\_ -> Error "Database Error") <$> (use pool $ statement address selectSalt)
+    mapError = mapLeft (\_ -> Error "Database Error") <$> use pool (statement address selectSalt)
     selectSalt :: Statement Text ByteString
     selectSalt = Statement sql encoder decoder True
     sql = "SELECT notary.signup($1)"

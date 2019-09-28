@@ -11,4 +11,4 @@ verifyJWT audience time jwk jwt = runExceptT $ do
   jwt' <- decodeCompact jwt
   verifyClaimsAt config jwk time jwt'
   where 
-    config = defaultJWTValidationSettings (== (fromString audience))
+    config = defaultJWTValidationSettings (== fromString audience)

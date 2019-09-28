@@ -38,7 +38,7 @@ data SignupRequest = SignupRequest
 
 $(deriveJSON defaultOptions{ fieldLabelModifier = drop 2 } ''SignupRequest)
 
-data SaltRequest = SaltRequest
+newtype SaltRequest = SaltRequest
     { sraddress :: Text
     } deriving (Generic, Typeable)
 
