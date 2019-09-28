@@ -2,14 +2,14 @@ version: 2
 jobs:
   build:
     docker:
-      - image: fpco/stack-build:lts-13.29
-      - image: postgres:9.5
+      - image: fpco/stack-build:lts-14.7
+      - image: postgres:11.5
         environment:
-          POSTGRES_USER: coinberry
-          POSTGRES_DB: coinberry_test
+          POSTGRES_USER: notary
+          POSTGRES_DB: notary_test
           POSTGRES_PASSWORD: ""
 
-    working_directory: /home/stackage
+    working_directory: /home/stackage/project
 
     environment:
       TEST_RESULTS: /tmp/test-results
@@ -17,16 +17,26 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: stack-trader-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
+          key: stack-notary-v2-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
+      - restore_cache:
+          key: stack-notary-v2-final-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
       - run: .circleci/setupenv.sh
-      - run: .circleci/build.sh
+      - run: stack build --only-dependencies
       - save_cache:
-          key: stack-trader-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
+          key: stack-notary-v2-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
           paths:
             - ~/.stack
             - .stack-work
             - ~/.local
+      - run: .circleci/build.sh
       - run: .circleci/test.sh
+      - run: stack install --resolver=lts-14.7 hlint
+      - save_cache:
+          key: stack-notary-v2-final-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
+          paths:
+            - ~/.stack
+            - .stack-work
+            - ~/.local
       - run: .circleci/lint.sh
       - persist_to_workspace:
           root: ~/.local/bin/
