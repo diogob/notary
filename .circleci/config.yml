@@ -9,7 +9,7 @@ jobs:
           POSTGRES_DB: notary_test
           POSTGRES_PASSWORD: ""
 
-    working_directory: /home/stackage
+    working_directory: /home/stackage/project
 
     environment:
       TEST_RESULTS: /tmp/test-results
@@ -17,11 +17,11 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: stack-trader-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
+          key: stack-notary-v2-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
       - run: .circleci/setupenv.sh
       - run: .circleci/build.sh
       - save_cache:
-          key: stack-trader-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
+          key: stack-notary-v2-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
           paths:
             - ~/.stack
             - .stack-work
