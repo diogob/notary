@@ -14,6 +14,7 @@ import Data.Vector
 import Network.HTTP.Types
 import Data.Aeson (encode)
 import Servant
+import Data.String (String)
 
 import qualified Data.ByteString.Base64 as B64
 import Crypto.Random.Types
@@ -35,12 +36,16 @@ signup :: SignupRequest -> AppM NoContent
 signup body = do
   getTime <- asks getTime
   cfg <- asks config
-  let t = getTime
-      jwt = sbjwt body
+  t <- liftIO getTime
+  let jwt = sbjwt body
+      jwk = sbpublicKey body
       audience = publicUri cfg
-  -- v <- verifyJWT "" t 
-  pushLogEntry $ "let's do some logging! jwt: " <> jwt
-  pure NoContent
+  claimsOrError <- verifyJWT (toS audience) t jwk undefined
+  case claimsOrError of
+    Right c -> do
+      pushLogEntry $ "let's do some logging! jwt: " <> jwt
+      pure NoContent
+    Left _ -> err $ Error "Invalid JWT"
   where
-    err :: ApiError -> Handler NoContent
+    err :: ApiError -> AppM NoContent
     err (Error msg) = throwError $ err503 { errBody = toS msg }
