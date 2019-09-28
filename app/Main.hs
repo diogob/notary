@@ -12,6 +12,7 @@ loadConfig =
   Env.parse (header "Notary") $
     Config <$> var (str <=< nonempty) "NOTARY_DB_URI"  (help "Database to to store signatures")
            <*> var (auto <=< nonempty) "NOTARY_PUBLIC_PORT" (help "Public port for the http server")
+           <*> var (str <=< nonempty) "NOTARY_PUBLIC_URI" (help "Public URI used for notary public interface")
    
 main :: IO ()
 main = loadConfig >>= startApp

@@ -34,9 +34,11 @@ salt body = do
 signup :: SignupRequest -> AppM NoContent
 signup body = do
   getTime <- asks getTime
+  cfg <- asks config
   let t = getTime
       jwt = sbjwt body
-  -- verifyJWT "" t 
+      audience = publicUri cfg
+  -- v <- verifyJWT "" t 
   pushLogEntry $ "let's do some logging! jwt: " <> jwt
   pure NoContent
   where
