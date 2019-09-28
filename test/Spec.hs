@@ -73,4 +73,4 @@ spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db c
     where
         signupJSON = request methodPost "/signup" [("Content-Type", "application/json")]
         saltJSON = request methodPost "/salt" [("Content-Type", "application/json")]
-        conf = Config { db = "postgres://notary_public:@localhost/notary_test", port = 8080 }
+        conf = Config { db = "postgres://notary_public:test@localhost/notary_test", port = 8080 }
