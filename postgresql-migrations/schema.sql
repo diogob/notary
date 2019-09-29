@@ -41,5 +41,24 @@ CREATE TABLE notary.confirmations (
     disabled_at timestamp
 );
 
-GRANT INSERT ON notary.confirmations TO notary_public;
-GRANT UPDATE (confirmed_at, disabled_at) ON notary.confirmations TO notary_public;
+CREATE OR REPLACE FUNCTION notary.signup(paddress text, ppublic_key jsonb) 
+RETURNS text
+LANGUAGE sql
+VOLATILE
+SECURITY DEFINER
+AS $$
+WITH token AS (
+    SELECT gen_random_bytes(16) as raw
+),
+confirm AS (
+    INSERT INTO notary.confirmations (address, public_key, confirmation_token_hash) 
+    SELECT paddress, ppublic_key, encode(digest(t.raw, 'sha512'), 'base64')
+    FROM token t
+    ON CONFLICT DO NOTHING
+)
+SELECT encode(t.raw, 'base64') FROM token t;
+$$;
+
+GRANT EXECUTE
+    ON FUNCTION notary.signup(paddress text, ppublic_key jsonb)
+    TO notary_public;
