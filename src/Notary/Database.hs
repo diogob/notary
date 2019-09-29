@@ -25,6 +25,6 @@ salt pool address = liftIO mapError
     mapError = mapLeft (\_ -> Error "Database Error") <$> use pool (statement address selectSalt)
     selectSalt :: Statement Text ByteString
     selectSalt = Statement sql encoder decoder True
-    sql = "SELECT notary.signup($1)"
+    sql = "SELECT notary.salt($1)"
     encoder = HE.param (HE.nonNullable HE.text)
     decoder = HD.singleRow (HD.column (HD.nonNullable HD.bytea))

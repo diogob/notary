@@ -12,7 +12,7 @@ CREATE TABLE notary.signups (
     salt bytea NOT NULL UNIQUE
 );
 
-CREATE OR REPLACE FUNCTION notary.signup(paddress text) 
+CREATE OR REPLACE FUNCTION notary.salt(paddress text) 
 RETURNS bytea
 LANGUAGE sql
 VOLATILE
@@ -29,7 +29,7 @@ SELECT coalesce(
 $$;
 
 GRANT EXECUTE
-    ON FUNCTION notary.signup(paddress text)
+    ON FUNCTION notary.salt(paddress text)
     TO notary_public;
 
 CREATE TABLE notary.confirmations (
