@@ -5,4 +5,4 @@ module Notary.Prelude
 
 import Protolude as Exports
 
-newtype ApiError = Error Text
+newtype ApiError = Error Text deriving (Eq, Show)

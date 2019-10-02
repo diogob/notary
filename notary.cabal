@@ -16,10 +16,11 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Notary
+                     , Notary.Database
+
   other-modules:       Notary.Prelude
                      , Notary.Api
                      , Notary.Domain
-                     , Notary.Database
                      , Notary.Handlers
                      , Notary.AppM
                      , Notary.JWT
@@ -68,6 +69,7 @@ test-suite notary-test
   hs-source-dirs:      test
   main-is:             Spec.hs
   other-modules:       ApiSpec
+                     , DatabaseSpec
   build-depends:       base
                      , notary
                      , hspec
