@@ -43,7 +43,7 @@ signup body = do
   claimsOrError <- verifyJWT (toS audience) t jwk (toS jwt)
   case claimsOrError of
     Right c ->
-      -- pushLogEntry $ "let's do some logging! jwt: " <> jwt
+      -- pushLogEntry $ "JWT Claims: " <> show c
       pure NoContent
     Left e -> err $ Error $ "Invalid JWT: " <> show e
   where
