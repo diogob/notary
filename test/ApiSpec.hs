@@ -76,8 +76,16 @@ spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db c
                                }
                 }
                 |] `shouldRespondWith` 400
-
-        it "responds with 200 when jwt is valid and correctly signed" $ do
+        it "responds with 400 when jwt is valid and correctly signed but missing kid" $
+            signupJSON [json| 
+                { "jwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIn0.PcLDqi9SWA0DsZ_wquguWyvL32cpry5WpjxIM1tZoEcxgVcTEa3F_kDvqQvgF_r2ev2zfoVGrf8Lknh81--hRpczPmiUdkRYT2P0njN2uqqFoOpXRQuerWZGtEvpmaX0qaNSPHoSVpkukhrhI3aslL7KCCX33DssoNBu7aYcBn1McNoiW4ZazPJG27Ipwfk-f7fI2MndLrLacguFAE7c3tb7qrSzze03QegA-kKlQTFLwxqjDiAWJORPAlzYZ0Ghk_IXFRZP57F0xMcuKQ82rLKmBZLYA3uNysfzNlfUaakHMqKWql329ne76ssrJIJ-l6GAgM6DgGMzj4mUNT2uXQ"
+                , "publicKey": { "kty": "RSA"
+                               , "e":"AQAB"
+                               , "n":"nzyis1ZjfNB0bBgKFMSvvkTtwlvBsaJq7S5wA-kzeVOVpVWwkWdVha4s38XM_pa_yr47av7-z3VTmvDRyAHcaT92whREFpLv9cj5lTeJSibyr_Mrm_YtjCZVWgaOYIhwrXwKLqPr_11inWsAkfIytvHWTxZYEcXLgAXFuUuaS3uF9gEiNQwzGTU1v0FqkqTBr4B8nW3HCN47XUu0t8Y0e-lf4s4OxQawWD79J9_5d3Ry0vbV3Am1FtGJiJvOwRsIfVChDpYStTcHTCMqtvWbV6L11BWkpzGXSW4Hv43qa-GSYOD2QU68Mb59oSk2OB-BtOLpJofmbGEGgvmwyCI9Mw"
+                               }
+                }
+                |] `shouldRespondWith` 400
+        it "responds with 200 when jwt is valid and correctly signed" $
             signupJSON [json| 
                 { "jwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIn0.PcLDqi9SWA0DsZ_wquguWyvL32cpry5WpjxIM1tZoEcxgVcTEa3F_kDvqQvgF_r2ev2zfoVGrf8Lknh81--hRpczPmiUdkRYT2P0njN2uqqFoOpXRQuerWZGtEvpmaX0qaNSPHoSVpkukhrhI3aslL7KCCX33DssoNBu7aYcBn1McNoiW4ZazPJG27Ipwfk-f7fI2MndLrLacguFAE7c3tb7qrSzze03QegA-kKlQTFLwxqjDiAWJORPAlzYZ0Ghk_IXFRZP57F0xMcuKQ82rLKmBZLYA3uNysfzNlfUaakHMqKWql329ne76ssrJIJ-l6GAgM6DgGMzj4mUNT2uXQ"
                 , "publicKey": { "kty": "RSA"

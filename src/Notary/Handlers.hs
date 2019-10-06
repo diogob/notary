@@ -39,7 +39,9 @@ signup body = do
   t <- liftIO getTime
   let jwt = sbjwt body
       jwk = sbpublicKey body
+      maybeKid = kid jwk
       audience = publicUri cfg
+  when (isNothing maybeKid) $ throwError $ err400 { errBody = "Missing kid" }
   claimsOrError <- verifyJWT (toS audience) t jwk (toS jwt)
   case claimsOrError of
     Right c ->

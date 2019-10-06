@@ -32,8 +32,8 @@ salt pool address = liftIO mapError
     encoder = HE.param (HE.nonNullable HE.text)
     decoder = HD.singleRow (HD.column (HD.nonNullable HD.bytea))
 
-signup :: MonadIO m => Pool -> Text -> JSON.Value -> m (Either ApiError Text)
-signup pool address key = liftIO mapError
+signup :: MonadIO m => Pool -> Text -> Text -> JSON.Value -> m (Either ApiError Text)
+signup pool address kid key = liftIO mapError
   where
     mapError = mapLeft (\_ -> Error "Database Error") <$> use pool (statement (address, key) selectSignup)
     selectSignup :: Statement (Text, JSON.Value) Text

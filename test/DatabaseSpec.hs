@@ -21,5 +21,5 @@ spec =
         salt p "foo@bar.com" `shouldReturn` previousSalt
     describe "signup" $
       it "should be successful" $ \p -> do
-        token <- signup p "foo@bar.com" [aesonQQ| { } |]
+        token <- signup p "foo@bar.com" "" [aesonQQ| { } |]
         token `shouldSatisfy` isRight

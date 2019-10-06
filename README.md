@@ -14,7 +14,7 @@
 ## Sign-up and Authentiction flow (using email as proof of id)
 
 1. Client send desired unique address and receive a randomly generated salt that will always be the same for that address.
-1. Client derives key pair using salt and user secret, send JWT containing address, a public key and kid (derived from public key + salt).
+1. Client derives key pair using salt and user secret, send JWT containing address, a public key and kid (derived from address + salt).
 1. Email is persisted alongside the public key (which should match the kid being derived again on the server). Confirmation token is created and made available for external email system for confirmation.
 1. Client signs the confirmation token and sends this new JWT
 1. Email is confirmed through confirmation endpoint using confirmation JWT to ensure the Client still has access to the secret (password need to be typed when confirming email).

@@ -17,3 +17,7 @@ verifyJWT audience time jwk jwt = runExceptT $ do
     pure claims
   where 
     config = defaultJWTValidationSettings (== fromString audience)
+
+kid :: JWK -> Maybe Text 
+kid key = 
+  key ^. jwkKid
