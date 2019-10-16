@@ -25,6 +25,4 @@ kid key =
 
 address :: ClaimsSet -> Maybe Text 
 address claims = 
-  case claims ^. claimSub of
-    Nothing -> Nothing
-    Just strOU ->  Just $ strOU ^. string
+  claims ^? claimSub . _Just . string
