@@ -12,7 +12,7 @@ import Notary.JWT
 import qualified Notary.Database as DB
 import Data.Vector
 import Network.HTTP.Types
-import Data.Aeson (encode)
+import Data.Aeson (encode, toJSON)
 import Servant
 import Data.String (String)
 
@@ -37,16 +37,20 @@ signup body = do
   getTime <- asks getTime
   cfg <- asks config
   t <- liftIO getTime
+  pool <- asks getPool
   let jwt = sbjwt body
       jwk = sbpublicKey body
       maybeKid = kid jwk
       audience = publicUri cfg
-  when (isNothing maybeKid) $ throwError $ err400 { errBody = "Missing kid" }
+  when (isNothing maybeKid) $ throwError $ err400 { errBody = "Missing kid" } -- optimization only
   claimsOrError <- verifyJWT (toS audience) t jwk (toS jwt)
-  case claimsOrError of
-    Right c ->
-      -- pushLogEntry $ "JWT Claims: " <> show c
-      pure NoContent
+  case address <$> claimsOrError of
+    Right (Just addr) -> do
+      tokenOrError <- DB.signup pool addr (toJSON jwk)
+      case tokenOrError of 
+        Right t -> pure NoContent
+        Left _ -> err $ Error $ "Could not create confirmation, possibly kid mismatch"
+    Right Nothing -> err $ Error $ "No sub claim in JWT"
     Left e -> err $ Error $ "Invalid JWT: " <> show e
   where
     err :: ApiError -> AppM NoContent

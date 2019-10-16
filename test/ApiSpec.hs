@@ -1,13 +1,23 @@
 {-# LANGUAGE QuasiQuotes #-}
 module ApiSpec (spec) where
 
-import Protolude hiding (get)
+import Protolude hiding (get, hash)
 
 import Notary
 import Test.Hspec
 import Test.Hspec.Wai
 import Test.Hspec.Wai.JSON
 import Network.HTTP.Types.Method
+import Network.Wai.Test hiding (request)
+import Data.Aeson (Value, decode)
+import Data.Aeson.Lens
+import Control.Lens
+import Crypto.Hash
+import qualified Data.ByteString.Base64 as B64
+import Data.String (String)
+
+hexSha512 :: ByteString -> String
+hexSha512 bs = show (hash bs :: Digest SHA512)
 
 spec :: Spec
 spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db conf) <*> mkGetTime)) $ do
@@ -85,7 +95,7 @@ spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db c
                                }
                 }
                 |] `shouldRespondWith` 400
-        it "responds with 200 when jwt is valid and correctly signed" $
+        it "responds with 400 when jwt is valid and correctly signed but has wrong kid" $
             signupJSON [json| 
                 { "jwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIn0.PcLDqi9SWA0DsZ_wquguWyvL32cpry5WpjxIM1tZoEcxgVcTEa3F_kDvqQvgF_r2ev2zfoVGrf8Lknh81--hRpczPmiUdkRYT2P0njN2uqqFoOpXRQuerWZGtEvpmaX0qaNSPHoSVpkukhrhI3aslL7KCCX33DssoNBu7aYcBn1McNoiW4ZazPJG27Ipwfk-f7fI2MndLrLacguFAE7c3tb7qrSzze03QegA-kKlQTFLwxqjDiAWJORPAlzYZ0Ghk_IXFRZP57F0xMcuKQ82rLKmBZLYA3uNysfzNlfUaakHMqKWql329ne76ssrJIJ-l6GAgM6DgGMzj4mUNT2uXQ"
                 , "publicKey": { "kty": "RSA"
@@ -94,7 +104,27 @@ spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db c
                                , "n":"nzyis1ZjfNB0bBgKFMSvvkTtwlvBsaJq7S5wA-kzeVOVpVWwkWdVha4s38XM_pa_yr47av7-z3VTmvDRyAHcaT92whREFpLv9cj5lTeJSibyr_Mrm_YtjCZVWgaOYIhwrXwKLqPr_11inWsAkfIytvHWTxZYEcXLgAXFuUuaS3uF9gEiNQwzGTU1v0FqkqTBr4B8nW3HCN47XUu0t8Y0e-lf4s4OxQawWD79J9_5d3Ry0vbV3Am1FtGJiJvOwRsIfVChDpYStTcHTCMqtvWbV6L11BWkpzGXSW4Hv43qa-GSYOD2QU68Mb59oSk2OB-BtOLpJofmbGEGgvmwyCI9Mw"
                                }
                 }
-                |] `shouldRespondWith` 200
+                |] `shouldRespondWith` 400
+        it "responds with 200 when jwt is valid and correctly signed" $ do
+            r <- saltJSON [json| { address: "1234567890" } |]
+            let rBody :: LByteString
+                rBody = simpleBody r
+                mSalt :: Maybe ByteString
+                mSalt = toS <$> rBody ^? key "salt" . _String
+            case mSalt of
+                Just s -> do 
+                                putErrLn $ "salt: " <> s
+                                signupJSON [json| 
+                                        { "jwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIn0.PcLDqi9SWA0DsZ_wquguWyvL32cpry5WpjxIM1tZoEcxgVcTEa3F_kDvqQvgF_r2ev2zfoVGrf8Lknh81--hRpczPmiUdkRYT2P0njN2uqqFoOpXRQuerWZGtEvpmaX0qaNSPHoSVpkukhrhI3aslL7KCCX33DssoNBu7aYcBn1McNoiW4ZazPJG27Ipwfk-f7fI2MndLrLacguFAE7c3tb7qrSzze03QegA-kKlQTFLwxqjDiAWJORPAlzYZ0Ghk_IXFRZP57F0xMcuKQ82rLKmBZLYA3uNysfzNlfUaakHMqKWql329ne76ssrJIJ-l6GAgM6DgGMzj4mUNT2uXQ"
+                                        , "publicKey": { "kty": "RSA"
+                                                    , "e":"AQAB"
+                                                    , "kid":#{hexSha512("1234567890 " <> toS s)}
+                                                    , "n":"nzyis1ZjfNB0bBgKFMSvvkTtwlvBsaJq7S5wA-kzeVOVpVWwkWdVha4s38XM_pa_yr47av7-z3VTmvDRyAHcaT92whREFpLv9cj5lTeJSibyr_Mrm_YtjCZVWgaOYIhwrXwKLqPr_11inWsAkfIytvHWTxZYEcXLgAXFuUuaS3uF9gEiNQwzGTU1v0FqkqTBr4B8nW3HCN47XUu0t8Y0e-lf4s4OxQawWD79J9_5d3Ry0vbV3Am1FtGJiJvOwRsIfVChDpYStTcHTCMqtvWbV6L11BWkpzGXSW4Hv43qa-GSYOD2QU68Mb59oSk2OB-BtOLpJofmbGEGgvmwyCI9Mw"
+                                                    }
+                                        }
+                                        |] `shouldRespondWith` 200
+
+                Nothing -> panic "Could not fetch salt during test setup"
     where
         signupJSON = request methodPost "/signup" [("Content-Type", "application/json")]
         saltJSON = request methodPost "/salt" [("Content-Type", "application/json")]

@@ -43,20 +43,30 @@ CREATE TABLE notary.confirmations (
 
 CREATE OR REPLACE FUNCTION notary.signup(paddress text, ppublic_key jsonb) 
 RETURNS text
-LANGUAGE sql
+LANGUAGE plpgsql
 VOLATILE
 SECURITY DEFINER
 AS $$
-WITH token AS (
-    SELECT gen_random_bytes(16) as raw
-),
-confirm AS (
-    INSERT INTO notary.confirmations (address, public_key, confirmation_token_hash) 
-    SELECT paddress, ppublic_key, encode(digest(t.raw, 'sha512'), 'base64')
-    FROM token t
-    ON CONFLICT DO NOTHING
-)
-SELECT encode(t.raw, 'base64') FROM token t;
+DECLARE
+    vkid text;
+    vtoken bytea;
+    vsalt text;
+BEGIN
+    vsalt := (SELECT encode(s.salt, 'base64') FROM notary.signups s WHERE s.address = paddress);
+    vkid := (SELECT encode(digest(paddress || ' ' || vsalt, 'sha512'), 'hex'));
+    IF coalesce(vkid <> ppublic_key->>'kid', true) THEN
+        RAISE EXCEPTION '% kid error: % could not be derived from % and %', vkid, ppublic_key->>'kid', paddress, vsalt;
+    END IF;
+
+    vtoken := gen_random_bytes(16);
+    INSERT INTO notary.confirmations 
+        (address, public_key, confirmation_token_hash) 
+    VALUES
+        (paddress, ppublic_key, encode(digest(vtoken, 'sha512'), 'base64'))
+    ON CONFLICT DO NOTHING;
+
+    RETURN encode(vtoken, 'base64');
+END;
 $$;
 
 GRANT EXECUTE
