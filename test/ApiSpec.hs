@@ -112,9 +112,7 @@ spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db c
                 mSalt :: Maybe ByteString
                 mSalt = toS <$> rBody ^? key "salt" . _String
             case mSalt of
-                Just s -> do 
-                                putErrLn $ "salt: " <> s
-                                signupJSON [json| 
+                Just s -> signupJSON [json| 
                                         { "jwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIn0.PcLDqi9SWA0DsZ_wquguWyvL32cpry5WpjxIM1tZoEcxgVcTEa3F_kDvqQvgF_r2ev2zfoVGrf8Lknh81--hRpczPmiUdkRYT2P0njN2uqqFoOpXRQuerWZGtEvpmaX0qaNSPHoSVpkukhrhI3aslL7KCCX33DssoNBu7aYcBn1McNoiW4ZazPJG27Ipwfk-f7fI2MndLrLacguFAE7c3tb7qrSzze03QegA-kKlQTFLwxqjDiAWJORPAlzYZ0Ghk_IXFRZP57F0xMcuKQ82rLKmBZLYA3uNysfzNlfUaakHMqKWql329ne76ssrJIJ-l6GAgM6DgGMzj4mUNT2uXQ"
                                         , "publicKey": { "kty": "RSA"
                                                     , "e":"AQAB"

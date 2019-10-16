@@ -30,7 +30,7 @@ spec =
         previousSalt <- salt p "foo@bar.com"
         case previousSalt of 
           Right s -> do
-            let kid = hexSha512("foo@bar.com " <> (B64.encode s))
+            let kid = hexSha512("foo@bar.com " <> B64.encode s)
             token <- signup p "foo@bar.com" [aesonQQ| { "kid": #{kid} } |]
             token `shouldSatisfy` isRight
           _ -> panic "could not fetch salt"

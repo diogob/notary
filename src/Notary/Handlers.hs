@@ -1,6 +1,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Notary.Handlers 
+module Notary.Handlers
     ( salt
     , signup
     ) where
@@ -25,7 +25,7 @@ salt :: SaltRequest -> AppM Salt
 salt body = do
   pool <- asks getPool
   saltOrError <- DB.salt pool $ sraddress body
-  case saltOrError of 
+  case saltOrError of
     Right salt -> pure $ Salt $ toS $ B64.encode salt
     Left e -> err e
   where
@@ -47,10 +47,10 @@ signup body = do
   case address <$> claimsOrError of
     Right (Just addr) -> do
       tokenOrError <- DB.signup pool addr (toJSON jwk)
-      case tokenOrError of 
+      case tokenOrError of
         Right t -> pure NoContent
-        Left _ -> err $ Error $ "Could not create confirmation, possibly kid mismatch"
-    Right Nothing -> err $ Error $ "No sub claim in JWT"
+        Left _ -> err $ Error "Could not create confirmation, possibly kid mismatch"
+    Right Nothing -> err $ Error "No sub claim in JWT"
     Left e -> err $ Error $ "Invalid JWT: " <> show e
   where
     err :: ApiError -> AppM NoContent
