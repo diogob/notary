@@ -52,8 +52,8 @@ DELETE signature (mark confirmation as disabled)
 * `NOTARY_PUBLIC_URI` - address visible to the user during signup (stored as `aud` claim and be checked against referrer header)
 * `NOTARY_PUBLIC_PORT` - where to listen for calls from users.
 
-* `confirmation_ttl` - time confirmations can wait for the `confirm` call.
-* `confirmation_uri` - URI to call with confirmation token (generated and never stored).
+* `CONFIRMATION_TTL` - time confirmations can wait for the `confirm` call.
+* `CONFIRMATION_URI` - URI to call with confirmation token (generated and never stored).
 * `admin_interface` - where to listen for calls from admins.
 * `max_calls_per_second` - calls/second/ip allowed before throtle.
 * `max_calls_per_minute` - calls/minute/ip allowed before blocking ip for `block_ips_for`.
