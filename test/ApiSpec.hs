@@ -15,6 +15,7 @@ import Control.Lens
 import Crypto.Hash
 import qualified Data.ByteString.Base64 as B64
 import Data.String (String)
+import Network.URI
 
 hexSha512 :: ByteString -> String
 hexSha512 bs = show (hash bs :: Digest SHA512)
@@ -126,4 +127,9 @@ spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db c
     where
         signupJSON = request methodPost "/signup" [("Content-Type", "application/json")]
         saltJSON = request methodPost "/salt" [("Content-Type", "application/json")]
-        conf = Config { db = "postgres://notary_public:test@localhost/notary_test", port = 8080, publicUri = "http://localhost:8080" }
+        conf = Config 
+                { db = "postgres://notary_public:test@localhost/notary_test"
+                , port = 8080
+                , publicUri = "http://localhost:8080" 
+                , confirmationUri = fromMaybe (panic "Could not parse test URI") $ parseURI "https://httpbin.org/post"
+                }

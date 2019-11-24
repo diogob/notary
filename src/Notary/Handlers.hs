@@ -9,17 +9,16 @@ import Notary.Prelude
 import Notary.Domain
 import Notary.AppM
 import Notary.JWT
+import Notary.HTTPClient
 import qualified Notary.Database as DB
 import Data.Vector
 import Network.HTTP.Types
-import Data.Aeson (encode, toJSON)
+import Data.Aeson (toJSON)
 import Servant
-import Data.String (String)
 
 import qualified Data.ByteString.Base64 as B64
-import Crypto.Random.Types
 
-import System.Log.FastLogger                      ( pushLogStrLn, toLogStr )
+import System.Log.FastLogger ( pushLogStrLn, toLogStr )
 
 salt :: SaltRequest -> AppM Salt
 salt body = do
@@ -48,7 +47,9 @@ signup body = do
     Right (Just addr) -> do
       tokenOrError <- DB.signup pool addr (toJSON jwk)
       case tokenOrError of
-        Right t -> pure NoContent
+        Right token -> do
+          sendConfirmationToken (confirmationUri cfg) token
+          pure NoContent
         Left _ -> err $ Error "Could not create confirmation, possibly kid mismatch"
     Right Nothing -> err $ Error "No sub claim in JWT"
     Left e -> err $ Error $ "Invalid JWT: " <> show e

@@ -34,6 +34,7 @@ data AppCtx = AppCtx { config :: Config
 data Config = Config { db :: Text 
                      , port :: Integer
                      , publicUri :: Text
+                     , confirmationUri :: URI
                      } deriving (Show)
 
 
