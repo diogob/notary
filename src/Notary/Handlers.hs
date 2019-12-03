@@ -74,7 +74,7 @@ confirm body = do
       claimsOrError <- verifyJWT (toS audience) t jwk (toS jwt)
       case claimsOrError of
         Right _ -> pure NoContent
-        Left e -> err $ Error $ "Invalid JWT: " <> show e
+        Left _ -> err $ Error "Invalid JWT"
     _ -> err $ Error "Invalid JWT"
   where
     err :: ApiError -> AppM NoContent
