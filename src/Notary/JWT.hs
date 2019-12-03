@@ -6,6 +6,8 @@ import Crypto.JWT
 import Data.Time.Clock (UTCTime)
 import Data.String (String, fromString)
 import Control.Lens
+import qualified Data.Aeson as JSON
+import qualified Data.Aeson.Types as JSON
 import Data.Aeson.Lens 
 
 verifyJWT :: MonadIO m => String -> UTCTime -> JWK -> LByteString -> m (Either JWTError ClaimsSet)
@@ -26,3 +28,6 @@ kid key =
 address :: ClaimsSet -> Maybe Text 
 address claims = 
   claims ^? claimSub . _Just . string
+
+jsonToJWK :: JSON.Value -> Maybe JWK
+jsonToJWK = JSON.parseMaybe JSON.parseJSON

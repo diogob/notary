@@ -59,4 +59,23 @@ signup body = do
     err (Error msg) = throwError $ err400 { errBody = toS msg }
 
 confirm :: JwtBody -> AppM NoContent
-confirm body = throwError $ err400 { errBody = "test" }
+confirm body = do
+  getTime <- asks getTime
+  cfg <- asks config
+  t <- liftIO getTime
+  pool <- asks getPool
+  let jwt = jbjwt body
+      kid = jbkid body
+      audience = publicUri cfg
+      jwkFromDB = fmap jsonToJWK
+  jwkOrError <- DB.jwkForKid pool kid
+  case jwkFromDB jwkOrError of
+    Right (Just jwk) -> do
+      claimsOrError <- verifyJWT (toS audience) t jwk (toS jwt)
+      case claimsOrError of
+        Right _ -> pure NoContent
+        Left e -> err $ Error $ "Invalid JWT: " <> show e
+    _ -> err $ Error "Invalid JWT"
+  where
+    err :: ApiError -> AppM NoContent
+    err (Error msg) = throwError $ err400 { errBody = toS msg }

@@ -1,0 +1,5 @@
+# Specify additional command line arguments
+- arguments: [-XQuasiQuotes]
+
+# Ignore some builtin hints
+- ignore: {name: Reduce duplication}

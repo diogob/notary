@@ -1,7 +1,7 @@
 module Notary.Database 
     ( salt
     , signup
-
+    , jwkForKid
     -- re-exports
     , Pool
     , UsageError
@@ -43,3 +43,6 @@ signup pool address key = liftIO mapError
       (fst >$< HE.param (HE.nonNullable HE.text)) <> 
       (snd >$< HE.param (HE.nonNullable HE.jsonb))
     decoder = HD.singleRow (HD.column (HD.nonNullable HD.text))
+
+jwkForKid :: MonadIO m => Pool -> Text -> m (Either ApiError JSON.Value)
+jwkForKid = undefined
