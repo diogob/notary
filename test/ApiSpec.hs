@@ -105,7 +105,7 @@ spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db c
                 |] `shouldRespondWith` 400
         it "responds with 400 when jwt is valid and correctly signed but has wrong kid" $
             signupJSON [json| 
-                { "jwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIn0.PcLDqi9SWA0DsZ_wquguWyvL32cpry5WpjxIM1tZoEcxgVcTEa3F_kDvqQvgF_r2ev2zfoVGrf8Lknh81--hRpczPmiUdkRYT2P0njN2uqqFoOpXRQuerWZGtEvpmaX0qaNSPHoSVpkukhrhI3aslL7KCCX33DssoNBu7aYcBn1McNoiW4ZazPJG27Ipwfk-f7fI2MndLrLacguFAE7c3tb7qrSzze03QegA-kKlQTFLwxqjDiAWJORPAlzYZ0Ghk_IXFRZP57F0xMcuKQ82rLKmBZLYA3uNysfzNlfUaakHMqKWql329ne76ssrJIJ-l6GAgM6DgGMzj4mUNT2uXQ"
+                { "jwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwODAifQ.IzxHrqVFP0aEkV9QuW3l-HV59TDWCa61Ypt9Pr_qraTDbYVSLIXOuZ6NncQM3tipIkTOoNL1OM4_RwQSOKtvK1DAIS5Eyn9vPBXL3DknauXyg2oSM8TgH5eNQkadmk_DzM_i0irT5M_yekWX_dfkuIcaRaYBv5GDEmNx7z4DX-ox-TBGIYe60mzDOzPRvctMEjDKlXMqxwh4MQVTgUoxTiS0YL6p2T3S9LfEI1UTiI_KPw2EqFL-E3hF5q8TeQKjEuXwD5i9wK0ALynfzepd_tD9I2Rt0Z9gj90c9R2xVHY03GthSuLIEKba47ejmCmjCihB2XkqwrgnM2QPVpXOOg"
                 , "publicKey": #{publicKey "7bbdb027-6a08-4663-890d-b04fb43cf9fa"}
                 }
                 |] `shouldRespondWith` 400
