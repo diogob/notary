@@ -3,6 +3,7 @@
 module Notary.Handlers
     ( salt
     , signup
+    , confirm
     ) where
 
 import Notary.Prelude
@@ -56,3 +57,6 @@ signup body = do
   where
     err :: ApiError -> AppM NoContent
     err (Error msg) = throwError $ err400 { errBody = toS msg }
+
+confirm :: JwtBody -> AppM NoContent
+confirm body = throwError $ err400 { errBody = "test" }
