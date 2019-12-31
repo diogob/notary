@@ -62,7 +62,7 @@ coinberrySwagger = toSwagger api
   & info.license ?~ ("MIT" & url ?~ URL "http://mit.com")
 
 server :: ServerT API AppM
-server = salt :<|> signup :<|> undefined
+server = salt :<|> signup :<|> confirm :<|> undefined
 
 nt :: AppCtx -> AppM a -> Handler a
 nt s x = runReaderT x s

@@ -25,8 +25,9 @@ data Signup = Signup
 
 $(deriveJSON defaultOptions ''Signup)
 
-newtype JwtBody = JwtBody
+data JwtBody = JwtBody
     { jbjwt :: Text
+    , jbkid :: Text
     } deriving (Generic, Typeable)
 
 $(deriveJSON defaultOptions ''JwtBody)
