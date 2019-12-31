@@ -30,7 +30,7 @@ data JwtBody = JwtBody
     , jbkid :: Text
     } deriving (Generic, Typeable)
 
-$(deriveJSON defaultOptions ''JwtBody)
+$(deriveJSON defaultOptions{ fieldLabelModifier = drop 2 } ''JwtBody)
 
 data SignupRequest = SignupRequest
     { sbjwt :: Text
