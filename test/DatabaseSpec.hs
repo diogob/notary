@@ -11,11 +11,30 @@ import Crypto.Hash
 import qualified Data.ByteString.Base64 as B64
 import Data.String (String)
 
+import qualified Hasql.Connection as Hasql
+import qualified Hasql.Session as Hasql
+import qualified Hasql.Statement as Hasql
+
 hexSha512 :: ByteString -> String
 hexSha512 bs = show (hash bs :: Digest SHA512)
 
+doOrDie :: Show e => IO (Either e a) -> IO a
+doOrDie acc = do
+  res <- acc
+  case res of
+    Left ex -> panic $ show ex
+    Right v -> pure v
+
 withDatabaseConnection :: IO Pool
-withDatabaseConnection = acquire (10, 10, "postgres://notary_public:test@localhost/notary_test")
+withDatabaseConnection = do
+  c <- doOrDie $ Hasql.acquire "postgres:///notary_test"
+  doOrDie $ Hasql.run (mapM_ truncateTable tables) c
+  acquire (10, 10, "postgres://notary_public:test@localhost/notary_test")
+  where
+    truncateTable table = Hasql.sql $ "truncate " <> table <> " cascade"
+    tables = [ "notary.signups"
+             , "notary.confirmations"
+             ]
 
 spec :: Spec
 spec =
