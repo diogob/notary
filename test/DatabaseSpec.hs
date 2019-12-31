@@ -53,3 +53,13 @@ spec =
             key <- jwkForKid p (toS kid)
             key `shouldSatisfy` isRight
           _ -> panic "could not fetch salt"
+    describe "confirm" $
+      it "should return confirmation date for public key" $ \p -> do
+        previousSalt <- salt p "foo@bar.com"
+        case previousSalt of 
+          Right s -> do
+            let kid = hexSha512("foo@bar.com " <> B64.encode s)
+            void $ signup p "foo@bar.com" [aesonQQ| { "kid": #{kid} } |]
+            confirmedAt <- confirm p [aesonQQ| { "kid": #{kid} } |]
+            confirmedAt `shouldSatisfy` isRight
+          _ -> panic "could not fetch salt"
