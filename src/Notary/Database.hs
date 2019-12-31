@@ -17,7 +17,7 @@ import Hasql.Session (Session, statement)
 import qualified Hasql.Encoders as HE
 import qualified Hasql.Decoders as HD
 import Hasql.Pool (Pool, UsageError, acquire, release, use)
-import Data.Either.Combinators (mapLeft)
+import Data.Either.Combinators (mapLeft, mapBoth)
 import Data.Vector hiding (sequence)
 import qualified Data.Aeson as JSON
 import Data.Functor.Contravariant ((>$<))
@@ -45,4 +45,11 @@ signup pool address key = liftIO mapError
     decoder = HD.singleRow (HD.column (HD.nonNullable HD.text))
 
 jwkForKid :: MonadIO m => Pool -> Text -> m (Either ApiError JSON.Value)
-jwkForKid = undefined
+jwkForKid pool kid = liftIO mapError
+  where
+    mapError = mapLeft (\_ -> Error "Database Error (could be null return in jwk_for_kid)") <$> use pool (statement kid selectPublicKey)
+    selectPublicKey :: Statement Text JSON.Value
+    selectPublicKey = Statement sql encoder decoder True
+    sql = "SELECT notary.jwk_for_kid($1)"
+    encoder = HE.param (HE.nonNullable HE.text)
+    decoder = HD.singleRow (HD.column (HD.nonNullable HD.jsonb))
