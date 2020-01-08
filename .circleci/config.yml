@@ -7,7 +7,7 @@ jobs:
         environment:
           POSTGRES_USER: notary
           POSTGRES_DB: notary_test
-          POSTGRES_PASSWORD: ""
+          POSTGRES_PASSWORD: "test"
 
     working_directory: /home/stackage/project
 

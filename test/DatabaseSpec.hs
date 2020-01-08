@@ -27,7 +27,7 @@ doOrDie acc = do
 
 withDatabaseConnection :: IO Pool
 withDatabaseConnection = do
-  c <- doOrDie $ Hasql.acquire "postgres:///notary_test"
+  c <- doOrDie $ Hasql.acquire "postgres://notary:test@localhost/notary_test"
   doOrDie $ Hasql.run (mapM_ truncateTable tables) c
   acquire (10, 10, "postgres://notary_public:test@localhost/notary_test")
   where
