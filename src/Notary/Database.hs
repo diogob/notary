@@ -20,7 +20,7 @@ import qualified Hasql.Encoders as HE
 import qualified Hasql.Decoders as HD
 import Hasql.Pool (Pool, UsageError, acquire, release, use)
 import Data.Either.Combinators (mapLeft, mapBoth)
-import Data.Vector hiding (sequence)
+import Data.Vector
 import qualified Data.Aeson as JSON
 import Data.Functor.Contravariant ((>$<))
 import PostgreSQL.Binary.Data (LocalTime)

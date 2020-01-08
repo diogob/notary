@@ -1,7 +1,7 @@
 {-# LANGUAGE QuasiQuotes #-}
 module SignupEndpointSpec (spec) where
 
-import Protolude hiding (get, hash)
+import Protolude hiding (hash)
 
 import Notary
 import Test.Hspec
