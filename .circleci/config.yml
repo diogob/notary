@@ -30,7 +30,6 @@ jobs:
             - ~/.local
       - run: .circleci/build.sh
       - run: .circleci/test.sh
-      - run: stack install --resolver=lts-14.7 hlint
       - save_cache:
           key: stack-notary-v2-final-{{ checksum "stack.yaml" }}-{{ checksum "notary.cabal" }}
           paths:
