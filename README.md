@@ -40,6 +40,15 @@ GET verify (200 - user is go, claims are in the response body, 422 - invalid jwt
 DELETE signature (mark confirmation as disabled)
 ```
 
+### Example Signup Client
+
+Open a local server in the `client` directory:
+
+```
+cd client
+python3 -m http.server 8000 --bind 127.0.0.1
+```
+
 ### Caveats
 
 * Resend confirmations is a new entry in signups relation.
