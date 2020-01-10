@@ -2,11 +2,13 @@ module Notary.Database
     ( salt
     , signup
     , jwkForKid
+    , confirm
     -- re-exports
     , Pool
     , UsageError
     , acquire
     , release
+    , LocalTime
     ) where
 
 
@@ -17,10 +19,11 @@ import Hasql.Session (Session, statement)
 import qualified Hasql.Encoders as HE
 import qualified Hasql.Decoders as HD
 import Hasql.Pool (Pool, UsageError, acquire, release, use)
-import Data.Either.Combinators (mapLeft)
-import Data.Vector hiding (sequence)
+import Data.Either.Combinators (mapLeft, mapBoth)
+import Data.Vector
 import qualified Data.Aeson as JSON
 import Data.Functor.Contravariant ((>$<))
+import PostgreSQL.Binary.Data (LocalTime)
 
 salt :: MonadIO m => Pool -> Text -> m (Either ApiError ByteString)
 salt pool address = liftIO mapError
@@ -45,4 +48,21 @@ signup pool address key = liftIO mapError
     decoder = HD.singleRow (HD.column (HD.nonNullable HD.text))
 
 jwkForKid :: MonadIO m => Pool -> Text -> m (Either ApiError JSON.Value)
-jwkForKid = undefined
+jwkForKid pool kid = liftIO mapError
+  where
+    mapError = mapLeft (\_ -> Error "Database Error (could be null return in jwk_for_kid)") <$> use pool (statement kid selectPublicKey)
+    selectPublicKey :: Statement Text JSON.Value
+    selectPublicKey = Statement sql encoder decoder True
+    sql = "SELECT notary.jwk_for_kid($1)"
+    encoder = HE.param (HE.nonNullable HE.text)
+    decoder = HD.singleRow (HD.column (HD.nonNullable HD.jsonb))
+
+confirm :: MonadIO m => Pool -> JSON.Value -> m (Either ApiError LocalTime)
+confirm pool kid = liftIO mapError
+  where
+    mapError = mapLeft (\_ -> Error "Database Error") <$> use pool (statement kid confirmPublicKey)
+    confirmPublicKey :: Statement JSON.Value LocalTime
+    confirmPublicKey = Statement sql encoder decoder True
+    sql = "SELECT notary.confirm($1)"
+    encoder = HE.param (HE.nonNullable HE.jsonb)
+    decoder = HD.singleRow (HD.column (HD.nonNullable HD.timestamp))

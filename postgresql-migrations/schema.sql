@@ -34,9 +34,10 @@ GRANT EXECUTE
 
 CREATE TABLE notary.confirmations (
     created_at timestamp NOT NULL UNIQUE DEFAULT now(),
+    public_key jsonb PRIMARY KEY,       
     address text NOT NULL REFERENCES notary.signups(address),
-    public_key jsonb NOT NULL,
     confirmation_token_hash text NOT NULL,
+    expires_at timestamp NOT NULL DEFAULT current_timestamp + '10 minutes'::interval,
     confirmed_at timestamp,
     disabled_at timestamp
 );
@@ -71,4 +72,46 @@ $$;
 
 GRANT EXECUTE
     ON FUNCTION notary.signup(paddress text, ppublic_key jsonb)
+    TO notary_public;
+
+CREATE OR REPLACE FUNCTION notary.jwk_for_kid(pkid text) 
+RETURNS jsonb
+LANGUAGE sql
+VOLATILE
+SECURITY DEFINER
+AS $$
+    SELECT c.public_key
+    FROM 
+        notary.signups s 
+        JOIN notary.confirmations c ON c.address = s.address
+    WHERE
+        encode(digest(c.address || ' ' || encode(s.salt, 'base64'), 'sha512'), 'hex') = pkid
+        AND c.expires_at > current_timestamp
+        AND c.confirmed_at IS NULL
+    ORDER BY
+        c.created_at DESC
+    LIMIT 1;
+$$;
+
+GRANT EXECUTE
+    ON FUNCTION notary.jwk_for_kid(pkid text)
+    TO notary_public;
+
+CREATE OR REPLACE FUNCTION notary.confirm(ppublic_key jsonb) 
+RETURNS timestamp
+LANGUAGE sql
+VOLATILE
+SECURITY DEFINER
+AS $$
+    UPDATE notary.confirmations
+    SET confirmed_at = current_timestamp
+    WHERE 
+        public_key = ppublic_key
+        AND expires_at > current_timestamp
+        AND confirmed_at IS NULL
+    RETURNING confirmed_at;
+$$;
+
+GRANT EXECUTE
+    ON FUNCTION notary.jwk_for_kid(pkid text)
     TO notary_public;

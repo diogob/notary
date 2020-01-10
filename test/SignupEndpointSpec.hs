@@ -1,7 +1,7 @@
 {-# LANGUAGE QuasiQuotes #-}
-module ApiSpec (spec) where
+module SignupEndpointSpec (spec) where
 
-import Protolude hiding (get, hash)
+import Protolude hiding (hash)
 
 import Notary
 import Test.Hspec
@@ -48,17 +48,7 @@ public key only:
 }
 -}
 spec :: Spec
-spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db conf) <*> mkGetTime)) $ do
-    describe "POST /salt" $ do
-        it "responds with 415 when ContentType is not set" $
-            post "/salt" "" `shouldRespondWith` 415
-        it "responds with 400 when body is empty" $
-            saltJSON "" `shouldRespondWith` 400
-        it "responds with 400 when body does not have the right json shape" $
-            saltJSON [json| { } |] `shouldRespondWith` 400
-        it "responds with 200 and salt when body has the right shape" $
-            saltJSON [json| { address: "test-address" } |] `shouldRespondWith` 200
-
+spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db conf) <*> mkGetTime)) $
     describe "POST /signup" $ do
         it "responds with 415 when ContentType is not set" $
             post "/signup" "" `shouldRespondWith` 415
@@ -118,15 +108,6 @@ spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db c
         it "responds with 200 when jwt is valid and correctly signed" $
             signupJSONWithRightKey "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwODAifQ.IzxHrqVFP0aEkV9QuW3l-HV59TDWCa61Ypt9Pr_qraTDbYVSLIXOuZ6NncQM3tipIkTOoNL1OM4_RwQSOKtvK1DAIS5Eyn9vPBXL3DknauXyg2oSM8TgH5eNQkadmk_DzM_i0irT5M_yekWX_dfkuIcaRaYBv5GDEmNx7z4DX-ox-TBGIYe60mzDOzPRvctMEjDKlXMqxwh4MQVTgUoxTiS0YL6p2T3S9LfEI1UTiI_KPw2EqFL-E3hF5q8TeQKjEuXwD5i9wK0ALynfzepd_tD9I2Rt0Z9gj90c9R2xVHY03GthSuLIEKba47ejmCmjCihB2XkqwrgnM2QPVpXOOg"
             `shouldRespondWith` 200
-    describe "POST /confirm" $ do
-        it "responds with 415 when ContentType is not set" $
-            post "/signup" "" `shouldRespondWith` 415
-        it "responds with 400 when body is empty" $
-            signupJSON "" `shouldRespondWith` 400
-        it "responds with 400 when body does not have the right json shape" $
-            signupJSON [json| { } |] `shouldRespondWith` 400
-        it "responds with 400 when jwt is empty" $
-            signupJSON [json| { "jwt": "" } |] `shouldRespondWith` 400
     where
         publicKey :: Text -> Value
         publicKey kid = [aesonQQ|{
@@ -139,7 +120,7 @@ spec = with (mkApp <$> (AppCtx conf <$> mkLogger <*> acquire (10, 10, toS $ db c
           }|]
 
         -- define request helpers in a list
-        [saltJSON, signupJSON, confirmJSON] = flip (request methodPost) [("Content-Type", "application/json")] <$> ["/salt", "/signup", "/confirm"]
+        [saltJSON, signupJSON] = flip (request methodPost) [("Content-Type", "application/json")] <$> ["/salt", "/signup"]
         signupJSONWithRightKey :: Text -> WaiSession SResponse
         signupJSONWithRightKey jwt = do
             r <- saltJSON [json| { address: "1234567890" } |]

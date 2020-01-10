@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 apt-get update
-apt-get install -y postgresql-client
+apt-get install -y postgresql-client hlint
 
 DBNAME=${DBNAME=notary_test}
 DBHOST=${DBHOST=localhost}

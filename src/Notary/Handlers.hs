@@ -73,9 +73,12 @@ confirm body = do
     Right (Just jwk) -> do
       claimsOrError <- verifyJWT (toS audience) t jwk (toS jwt)
       case claimsOrError of
-        Right _ -> pure NoContent
-        Left _ -> err $ Error "Invalid JWT"
-    _ -> err $ Error "Invalid JWT"
+        Right claims -> do
+          pushLogEntry $ "KID confirmed: " <> kid
+          void $ DB.confirm pool (toJSON jwk)
+        Left _ -> pushLogEntry $ "Invalid JWT: " <> jwt
+    _ -> pushLogEntry $ "Invalid KID: " <> kid
+  pure NoContent
   where
     err :: ApiError -> AppM NoContent
     err (Error msg) = throwError $ err400 { errBody = toS msg }
