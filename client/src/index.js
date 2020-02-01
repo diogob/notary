@@ -2,6 +2,35 @@ import JWK from "node-jose";
 import scrypt from "scrypt-js";
 import {Buffer} from "buffer/";
 
+
+import forge from "node-forge";
+import {CURVES} from "./curves";
+import {ec} from "./math";
+
+const BigInteger = forge.jsbn.BigInteger;
+
+console.log(JWK);
+
+function hex2bn(s) {
+    return new BigInteger(s, 16);
+}
+
+function namedCurve(curve) {
+    var params = CURVES[curve];
+    if (!params) {
+      throw new TypeError("unsupported named curve: " + curve);
+    }
+  
+    return params;
+}
+
+function bin2bn(s) {
+    if ("string" === typeof s) {
+        s = Buffer.from(s, "binary");
+    }
+    return hex2bn(s.toString("hex"));
+}
+
 function get(id) { return document.getElementById(id); }
 function normalized(field) {
     var value = get('pbkdf-' + field).value;
@@ -28,6 +57,30 @@ function clearConsole() {
     firstLine = true;
     get('result').innerHTML = '';
 }
+
+function keySizeBytes(params) {
+    return Math.ceil(params.getN().bitLength() / 8);
+}
+
+function generateKeyPair(curve) {
+    var params = namedCurve(curve),
+        n = params.getN();
+
+    // generate random within range [1, N-1)
+    var r = forge.random.getBytes(keySizeBytes(params));
+    r = bin2bn(r);
+
+    var n1 = n.subtract(BigInteger.ONE);
+    var d = r.mod(n1).add(BigInteger.ONE);
+
+    // var privkey = new ECPrivateKey(curve, d),
+    //     pubkey = privkey.toPublicKey();
+
+    return {
+        "private": d,
+        "public": "somthing derived from d"
+    };
+};
 
 function printConsole(message) {
     if (!firstLine) { message = '<br /><br />' + message; }
