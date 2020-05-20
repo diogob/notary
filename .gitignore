@@ -12,3 +12,4 @@ site
 rails.conf
 cabal-helper*
 .dir-locals.el
+node_modules
